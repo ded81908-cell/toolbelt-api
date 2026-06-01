@@ -3,83 +3,149 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Toolbelt API — developer utilities, pay as you go</title>
+    <title>Toolbelt API — 50+ developer utilities, pay as you go</title>
     <meta
       name="description"
-      content="One API for QR codes, social/OG images, JSON/YAML/CSV conversion, hashing, encoding and generators. Fast, cheap, no AI bills."
+      content="One fast API for QR & barcodes, invoices, Markdown, data conversion, hashing, validators, i18n and more. No AI bills, predictable pricing, live in minutes."
     />
     <style>
-      :root { color-scheme: dark; }
+      :root {
+        color-scheme: dark;
+        --bg: #070b12; --panel: #0e151f; --panel2: #121b27; --line: #1c2735;
+        --text: #e8eef6; --muted: #93a1b5; --dim: #5c6878;
+        --accent: #38bdf8; --accent2: #818cf8; --green: #34d399;
+      }
       * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
       body {
         margin: 0;
-        font-family: 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif;
-        background: radial-gradient(1200px 600px at 70% -10%, #1e293b, #0b1220 60%);
-        color: #e2e8f0;
-        line-height: 1.6;
+        font-family: 'Segoe UI', system-ui, -apple-system, "Hiragino Kaku Gothic ProN", "Noto Sans JP", Helvetica, Arial, sans-serif;
+        background:
+          radial-gradient(900px 520px at 82% -8%, rgba(56,189,248,.18), transparent 60%),
+          radial-gradient(700px 480px at 8% 4%, rgba(129,140,248,.16), transparent 55%),
+          var(--bg);
+        color: var(--text); line-height: 1.65; -webkit-font-smoothing: antialiased;
       }
-      .wrap { max-width: 880px; margin: 0 auto; padding: 64px 24px 96px; }
-      .badge {
-        display: inline-block; padding: 6px 14px; border-radius: 999px;
-        background: rgba(56,189,248,.15); color: #7dd3fc; font-weight: 700;
-        font-size: 13px; letter-spacing: .04em;
+      a { color: var(--accent); text-decoration: none; }
+      .wrap { max-width: 980px; margin: 0 auto; padding: 0 22px; }
+
+      /* nav */
+      nav { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; }
+      .brand { font-weight: 800; font-size: 18px; letter-spacing: .2px; }
+      .brand .dot { color: var(--accent); }
+      .nav-links a { color: var(--muted); font-size: 14px; font-weight: 600; margin-left: 22px; }
+      .nav-links a:hover { color: var(--text); }
+
+      /* hero */
+      .hero { padding: 56px 0 30px; }
+      .pill {
+        display: inline-flex; gap: 8px; align-items: center; padding: 6px 13px; border-radius: 999px;
+        background: rgba(56,189,248,.12); color: #9bdcff; font-weight: 700; font-size: 12.5px;
+        letter-spacing: .04em; border: 1px solid rgba(56,189,248,.25);
       }
-      h1 { font-size: 44px; margin: 18px 0 8px; line-height: 1.1; }
-      h1 span { color: #38bdf8; }
-      p.lead { font-size: 19px; color: #94a3b8; max-width: 620px; }
-      .cta { margin: 28px 0 8px; display: flex; gap: 12px; flex-wrap: wrap; }
-      .btn {
-        text-decoration: none; padding: 12px 22px; border-radius: 12px; font-weight: 700;
+      h1 { font-size: 52px; line-height: 1.06; margin: 20px 0 12px; letter-spacing: -.5px; font-weight: 850; }
+      h1 .grad { background: linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+      p.lead { font-size: 20px; color: var(--muted); max-width: 660px; margin: 0; }
+      .cta { margin: 30px 0 6px; display: flex; gap: 12px; flex-wrap: wrap; }
+      .btn { padding: 13px 24px; border-radius: 12px; font-weight: 700; font-size: 15px; display: inline-block; transition: transform .08s ease; }
+      .btn:active { transform: translateY(1px); }
+      .btn.primary { background: linear-gradient(90deg, var(--accent), var(--accent2)); color: #04141f; }
+      .btn.ghost { border: 1px solid var(--line); color: var(--text); background: var(--panel); }
+
+      /* stats */
+      .stats { display: flex; flex-wrap: wrap; gap: 14px; margin: 40px 0 10px; }
+      .stat { flex: 1 1 150px; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
+      .stat b { display: block; font-size: 26px; color: var(--text); }
+      .stat span { color: var(--muted); font-size: 13px; }
+
+      /* sections */
+      .sec-title { font-size: 13px; letter-spacing: 1.6px; text-transform: uppercase; color: var(--accent); font-weight: 700; margin: 64px 0 4px; }
+      h2 { font-size: 28px; margin: 6px 0 18px; letter-spacing: -.3px; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+      .card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 20px; transition: border-color .15s ease, transform .15s ease; }
+      .card:hover { border-color: #2a3a4f; transform: translateY(-2px); }
+      .card .ic { font-size: 22px; }
+      .card h3 { margin: 10px 0 6px; font-size: 17px; }
+      .card code { color: #9bdcff; font-size: 12.5px; background: #0a1119; padding: 2px 7px; border-radius: 6px; }
+      .card p { margin: 8px 0 0; color: var(--muted); font-size: 13.5px; }
+
+      /* code sample */
+      .code { background: #060a10; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; margin-top: 18px; }
+      .code .bar { display: flex; gap: 7px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+      .code .bar i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+      .code .bar i:nth-child(1){background:#ff5f57}.code .bar i:nth-child(2){background:#febc2e}.code .bar i:nth-child(3){background:#28c840}
+      .code pre { margin: 0; padding: 18px 20px; overflow-x: auto; font-size: 13.5px; line-height: 1.7; color: #cbd5e1; font-family: "SF Mono", Menlo, Consolas, monospace; }
+      .code .k { color: #9bdcff; } .code .s { color: #86efac; } .code .c { color: #5c6878; }
+
+      footer { margin: 72px 0 56px; padding-top: 22px; border-top: 1px solid var(--line); color: var(--dim); font-size: 13.5px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+
+      @media (max-width: 600px) {
+        h1 { font-size: 38px; } p.lead { font-size: 18px; }
+        .nav-links a:first-child { display: none; }
       }
-      .btn.primary { background: #38bdf8; color: #04222e; }
-      .btn.ghost { border: 1px solid #334155; color: #e2e8f0; }
-      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; margin-top: 44px; }
-      .card { background: rgba(148,163,184,.06); border: 1px solid #1e293b; border-radius: 16px; padding: 20px; }
-      .card h3 { margin: 0 0 6px; font-size: 18px; }
-      .card code { color: #7dd3fc; font-size: 13px; }
-      pre {
-        background: #0b1220; border: 1px solid #1e293b; border-radius: 12px;
-        padding: 18px; overflow-x: auto; font-size: 13px; color: #cbd5e1; margin-top: 36px;
-      }
-      footer { margin-top: 56px; color: #64748b; font-size: 14px; }
-      a { color: #7dd3fc; }
     </style>
   </head>
   <body>
     <div class="wrap">
-      <span class="badge">DEVELOPER API</span>
-      <h1>One <span>toolbelt</span> for the boring stuff.</h1>
-      <p class="lead">
-        QR &amp; barcodes, social/OG images, invoices, Markdown, data conversion,
-        hashing, generators, bulk endpoints, Japanese text tools and i18n
-        (transliteration, phone, postal, currency) — behind a single fast API.
-        No AI bills, predictable pricing, live in minutes.
-      </p>
-      <div class="cta">
-        <a class="btn primary" href="/docs">Interactive docs →</a>
-        <a class="btn ghost" href="https://rapidapi.com/">Get an API key</a>
-      </div>
+      <nav>
+        <div class="brand">tool<span class="dot">·</span>belt <span style="color:var(--muted);font-weight:600">API</span></div>
+        <div class="nav-links">
+          <a href="#features">Features</a>
+          <a href="/docs">Docs</a>
+          <a href="https://rapidapi.com/">Get a key</a>
+        </div>
+      </nav>
 
+      <section class="hero">
+        <span class="pill">● 50+ endpoints · zero AI cost</span>
+        <h1>One <span class="grad">toolbelt</span><br />for the boring stuff.</h1>
+        <p class="lead">
+          QR &amp; barcodes, invoices, Markdown, data conversion, hashing, validators,
+          generators and full i18n — behind a single, fast, predictable API.
+          No AI bills. Deterministic results. Live in minutes.
+        </p>
+        <div class="cta">
+          <a class="btn primary" href="/docs">Explore the API →</a>
+          <a class="btn ghost" href="https://rapidapi.com/">Get an API key</a>
+        </div>
+
+        <div class="stats">
+          <div class="stat"><b>50+</b><span>endpoints, one base URL</span></div>
+          <div class="stat"><b>$0</b><span>inference cost — ~100% margin</span></div>
+          <div class="stat"><b>&lt;15ms</b><span>typical compute per call</span></div>
+          <div class="stat"><b>OpenAPI</b><span>interactive docs at /docs</span></div>
+        </div>
+      </section>
+
+      <div class="sec-title" id="features">What's inside</div>
+      <h2>Everything an app reaches for</h2>
       <div class="grid">
-        <div class="card"><h3>QR &amp; barcodes</h3><code>POST /v1/qr</code><p>QR + Code128/EAN/UPC/PDF417. PNG or SVG.</p></div>
-        <div class="card"><h3>OG images</h3><code>POST /v1/og-image</code><p>Social cards as SVG.</p></div>
-        <div class="card"><h3>Convert</h3><code>POST /v1/convert</code><p>JSON ↔ YAML ↔ CSV.</p></div>
-        <div class="card"><h3>Hash &amp; encode</h3><code>POST /v1/hash</code><p>SHA/MD5/HMAC, base64, hex.</p></div>
-        <div class="card"><h3>Documents</h3><code>POST /v1/invoice</code><p>Invoices (SVG) &amp; Markdown→HTML.</p></div>
-        <div class="card"><h3>🇯🇵 Japanese</h3><code>POST /v1/jp/convert</code><p>Width, kana &amp; romaji conversion.</p></div>
-        <div class="card"><h3>🌍 i18n</h3><code>POST /v1/phone</code><p>Transliterate, phone, postal, currency.</p></div>
-        <div class="card"><h3>Dev tools</h3><code>POST /v1/jwt/decode</code><p>JWT, color/contrast, units, time, geo.</p></div>
-        <div class="card"><h3>Validators</h3><code>POST /v1/validate/email</code><p>Email, card (Luhn), IBAN, pw strength.</p></div>
-        <div class="card"><h3>Generators</h3><code>GET /v1/uuid</code><p>UUIDs, passwords, tokens, slugs, lorem.</p></div>
+        <div class="card"><div class="ic">🔳</div><h3>QR &amp; barcodes</h3><code>POST /v1/barcode</code><p>QR, Wi-Fi/vCard QR, Code128/EAN/UPC/PDF417. PNG or SVG.</p></div>
+        <div class="card"><div class="ic">🧾</div><h3>Documents</h3><code>POST /v1/invoice</code><p>SVG invoices with auto totals, Markdown → safe HTML.</p></div>
+        <div class="card"><div class="ic">🔁</div><h3>Convert</h3><code>POST /v1/convert</code><p>JSON ↔ YAML ↔ CSV, units, time, number bases.</p></div>
+        <div class="card"><div class="ic">🔐</div><h3>Crypto &amp; tokens</h3><code>POST /v1/hash</code><p>SHA/MD5/HMAC, JWT decode, CRC32, base64/hex.</p></div>
+        <div class="card"><div class="ic">✅</div><h3>Validators</h3><code>POST /v1/validate/email</code><p>Email, card (Luhn), IBAN, password strength.</p></div>
+        <div class="card"><div class="ic">🌍</div><h3>i18n</h3><code>POST /v1/phone</code><p>Transliteration, phone, postal, currency.</p></div>
+        <div class="card"><div class="ic">🇯🇵</div><h3>Japanese</h3><code>POST /v1/jp/convert</code><p>Full-width⇄half-width, kana, romaji.</p></div>
+        <div class="card"><div class="ic">🆔</div><h3>Generators</h3><code>POST /v1/ulid</code><p>UUID, ULID, NanoID, passwords, passphrases, lorem.</p></div>
       </div>
 
-      <pre>curl -X POST https://your-host/v1/qr \
-  -H "X-API-Key: your-key" \
-  -H "Content-Type: application/json" \
-  -d '{"text":"https://example.com","format":"png","size":512}' \
+      <div class="sec-title">Try it</div>
+      <h2>One request, real output</h2>
+      <div class="code">
+        <div class="bar"><i></i><i></i><i></i></div>
+        <pre><span class="c"># Generate a QR code as PNG</span>
+<span class="k">curl</span> -X POST https://toolbelt-api-9oll.onrender.com/v1/qr \
+  -H <span class="s">"X-RapidAPI-Key: YOUR_KEY"</span> \
+  -H <span class="s">"Content-Type: application/json"</span> \
+  -d <span class="s">'{"text":"https://example.com","format":"png","size":512}'</span> \
   --output qr.png</pre>
+      </div>
 
-      <footer>Toolbelt API · <a href="/docs">/docs</a> · <a href="/health">/health</a></footer>
+      <footer>
+        <span>Toolbelt API · deterministic developer utilities</span>
+        <span><a href="/docs">/docs</a> · <a href="/health">/health</a> · <a href="https://rapidapi.com/">RapidAPI</a></span>
+      </footer>
     </div>
   </body>
 </html>
