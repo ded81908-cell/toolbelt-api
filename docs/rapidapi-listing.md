@@ -10,7 +10,7 @@
 1. RapidAPI Provider Dashboard → **Add New API**
 2. 入力方法は **「OpenAPI」** を選び、デプロイ済みサーバーの
    **`https://<your-app>.onrender.com/docs/json`** を指定（または同 JSON を貼付）
-   - 検証済み：`OpenAPI 3.0.3 / 39 オペレーション / summary 欠落 0 / apiKey 認証`
+   - 検証済み：`OpenAPI 3.0.3 / 51 オペレーション / summary 欠落 0 / apiKey 認証`
 3. **Base URL** に Render の URL を設定
 4. **Security**：API Key を `X-API-Key`（ヘッダ）に設定。RapidAPI が発行するプロキシ秘密鍵を
    控え、Render の環境変数 `RAPIDAPI_PROXY_SECRET` に登録（これで RapidAPI 以外の直叩きを遮断）

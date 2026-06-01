@@ -120,6 +120,80 @@ export async function textRoutes(app: FastifyInstance): Promise<void> {
     },
   );
 
+  app.post<{ Body: { a: string; b: string } }>(
+    "/v1/text/diff",
+    {
+      schema: {
+        summary: "Line-level diff between two texts",
+        description: "Returns an array of ops (eq/add/del) plus added/removed counts. Uses an LCS.",
+        tags: ["text"],
+        body: {
+          type: "object",
+          required: ["a", "b"],
+          properties: { a: { type: "string", maxLength: 200_000 }, b: { type: "string", maxLength: 200_000 } },
+        },
+      },
+    },
+    async (req) => {
+      const a = req.body.a.split("\n");
+      const b = req.body.b.split("\n");
+      const n = a.length, m = b.length;
+      // LCS length table.
+      const lcs = Array.from({ length: n + 1 }, () => new Int32Array(m + 1));
+      for (let i = n - 1; i >= 0; i--)
+        for (let j = m - 1; j >= 0; j--)
+          lcs[i][j] = a[i] === b[j] ? lcs[i + 1][j + 1] + 1 : Math.max(lcs[i + 1][j], lcs[i][j + 1]);
+
+      const ops: { type: "eq" | "add" | "del"; line: string }[] = [];
+      let i = 0, j = 0, added = 0, removed = 0;
+      while (i < n && j < m) {
+        if (a[i] === b[j]) { ops.push({ type: "eq", line: a[i] }); i++; j++; }
+        else if (lcs[i + 1][j] >= lcs[i][j + 1]) { ops.push({ type: "del", line: a[i] }); i++; removed++; }
+        else { ops.push({ type: "add", line: b[j] }); j++; added++; }
+      }
+      while (i < n) { ops.push({ type: "del", line: a[i++] }); removed++; }
+      while (j < m) { ops.push({ type: "add", line: b[j++] }); added++; }
+      return { added, removed, ops };
+    },
+  );
+
+  app.post<{ Body: { text: string; action?: "encode" | "decode" } }>(
+    "/v1/html/entities",
+    {
+      schema: {
+        summary: "Encode or decode HTML entities",
+        tags: ["text"],
+        body: {
+          type: "object",
+          required: ["text"],
+          properties: {
+            text: { type: "string", maxLength: 500_000 },
+            action: { type: "string", enum: ["encode", "decode"], default: "encode" },
+          },
+        },
+      },
+    },
+    async (req) => {
+      const { text } = req.body;
+      const action = req.body.action ?? "encode";
+      if (action === "encode") {
+        const result = text
+          .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+        return { action, result };
+      }
+      const named: Record<string, string> = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " " };
+      const result = text.replace(/&(#x?[0-9a-fA-F]+|[a-zA-Z]+);/g, (m, code: string) => {
+        if (code[0] === "#") {
+          const cp = code[1] === "x" || code[1] === "X" ? parseInt(code.slice(2), 16) : parseInt(code.slice(1), 10);
+          return Number.isFinite(cp) ? String.fromCodePoint(cp) : m;
+        }
+        return named[code] ?? m;
+      });
+      return { action, result };
+    },
+  );
+
   app.post<{ Body: { html: string } }>(
     "/v1/html/strip",
     {

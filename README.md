@@ -37,6 +37,12 @@ gross margin is near 100%.
 | `POST /v1/geo/distance` | Great-circle (Haversine) distance |
 | `POST /v1/validate/email` · `/creditcard` · `/iban` | Validators (Luhn, mod-97, syntax) |
 | `POST /v1/password/strength` | Entropy & crack-time estimate |
+| `POST /v1/url/parse` · `/v1/url/query` | Parse URLs / build & parse query strings |
+| `POST /v1/number/format` · `/base` · `/roman` | Locale format, base (2–36), Roman numerals |
+| `POST /v1/nanoid` · `/v1/ulid` · `/v1/passphrase` | ID & passphrase generators |
+| `POST /v1/text/diff` · `/v1/html/entities` | Line diff; HTML entity encode/decode |
+| `POST /v1/time/diff` | Humanized duration between timestamps |
+| `POST /v1/checksum/crc32` | CRC32 checksum |
 | `GET  /v1/usage` | The calling client's own usage counters |
 | `GET  /health` | Liveness (unauthenticated) |
 | `GET  /docs` | Interactive OpenAPI (Swagger UI) |
@@ -59,7 +65,7 @@ curl -X POST http://localhost:3000/v1/qr \
 
 ```bash
 npm run build      # tsc -> dist/
-npm test           # vitest, 49 tests
+npm test           # vitest, 62 tests
 npm run typecheck  # no-emit type check (also runs in CI)
 ```
 
@@ -127,8 +133,10 @@ src/
   lib/jp.ts       Japanese text (kana, width, romaji) — no deps
   lib/translit.ts transliteration (Latin/Cyrillic/Greek) — no deps
   routes/         qr, ogimage, convert, hash, generate, meta,
-                  jp, bulk, barcode, invoice,
-                  intl (translit/phone/postal), currency, markdown
+                  jp, bulk, barcode, invoice, markdown,
+                  intl (translit/phone/postal), currency,
+                  color, text, datetime, jwt, validate, units, geo,
+                  qrextra (wifi/vcard), url, number, idgen, checksum
 public/index.html landing page
 test/api.test.ts  end-to-end tests
 ```

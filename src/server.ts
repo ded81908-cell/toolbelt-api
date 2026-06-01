@@ -29,6 +29,10 @@ import { validateRoutes } from "./routes/validate.js";
 import { unitsRoutes } from "./routes/units.js";
 import { geoRoutes } from "./routes/geo.js";
 import { qrExtraRoutes } from "./routes/qrextra.js";
+import { urlRoutes } from "./routes/url.js";
+import { numberRoutes } from "./routes/number.js";
+import { idGenRoutes } from "./routes/idgen.js";
+import { checksumRoutes } from "./routes/checksum.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -115,6 +119,10 @@ export async function buildServer(config: Config = loadConfig()): Promise<Fastif
   await app.register(unitsRoutes);
   await app.register(geoRoutes);
   await app.register(qrExtraRoutes);
+  await app.register(urlRoutes);
+  await app.register(numberRoutes);
+  await app.register(idGenRoutes);
+  await app.register(checksumRoutes);
 
   return app;
 }

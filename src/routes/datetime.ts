@@ -62,4 +62,50 @@ export async function datetimeRoutes(app: FastifyInstance): Promise<void> {
       };
     },
   );
+
+  app.post<{ Body: { from: string | number; to?: string | number } }>(
+    "/v1/time/diff",
+    {
+      schema: {
+        summary: "Humanized difference between two timestamps",
+        description: "Each value may be a Unix timestamp (seconds) or ISO-8601 string. `to` defaults to now.",
+        tags: ["datetime"],
+        body: {
+          type: "object",
+          required: ["from"],
+          properties: { from: { type: ["string", "number"] }, to: { type: ["string", "number"] } },
+        },
+      },
+    },
+    async (req, reply) => {
+      const parse = (v: string | number | undefined): Date => {
+        if (v === undefined || v === "") return new Date();
+        if (typeof v === "number") return new Date(v * 1000);
+        return /^\d+$/.test(v) ? new Date(Number(v) * 1000) : new Date(v);
+      };
+      const from = parse(req.body.from);
+      const to = parse(req.body.to);
+      if (Number.isNaN(from.getTime()) || Number.isNaN(to.getTime())) {
+        return reply.code(422).send({ error: "invalid_input", message: "Could not parse one of the timestamps." });
+      }
+      const ms = to.getTime() - from.getTime();
+      const abs = Math.abs(ms);
+      const units: [string, number][] = [
+        ["year", 31536000000], ["day", 86400000], ["hour", 3600000], ["minute", 60000], ["second", 1000],
+      ];
+      const parts: string[] = [];
+      let rem = abs;
+      for (const [name, size] of units) {
+        const n = Math.floor(rem / size);
+        if (n > 0) { parts.push(`${n} ${name}${n === 1 ? "" : "s"}`); rem -= n * size; }
+      }
+      const humanized = parts.length ? parts.slice(0, 2).join(", ") + (ms < 0 ? " ago" : "") : "0 seconds";
+      return {
+        milliseconds: ms,
+        seconds: Math.round(ms / 1000),
+        days: Math.round((ms / 86400000) * 100) / 100,
+        humanized,
+      };
+    },
+  );
 }

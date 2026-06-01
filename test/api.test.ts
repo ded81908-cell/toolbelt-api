@@ -392,6 +392,85 @@ describe("qr extra", () => {
   });
 });
 
+describe("url", () => {
+  it("parses a URL into components", async () => {
+    const res = await auth({ url: "https://u:p@ex.com:8443/a/b?x=1&y=2#frag" }, "/v1/url/parse");
+    const b = res.json();
+    expect(b.hostname).toBe("ex.com");
+    expect(b.port).toBe("8443");
+    expect(b.query).toEqual({ x: "1", y: "2" });
+  });
+  it("builds a query string", async () => {
+    const res = await auth({ action: "build", value: { a: 1, b: "two" } }, "/v1/url/query");
+    expect(res.json().queryString).toBe("a=1&b=two");
+  });
+});
+
+describe("number", () => {
+  it("formats currency", async () => {
+    const res = await auth({ value: 1234.5, style: "currency", currency: "USD" }, "/v1/number/format");
+    expect(res.json().formatted).toBe("$1,234.50");
+  });
+  it("converts base 10 to base 16", async () => {
+    const res = await auth({ value: "255", fromBase: 10, toBase: 16 }, "/v1/number/base");
+    expect(res.json().result).toBe("ff");
+  });
+  it("converts integer to roman", async () => {
+    const res = await auth({ value: 2024, to: "roman" }, "/v1/number/roman");
+    expect(res.json().result).toBe("MMXXIV");
+  });
+  it("converts roman to integer", async () => {
+    const res = await auth({ value: "MCMLXXXIV", to: "arabic" }, "/v1/number/roman");
+    expect(res.json().result).toBe(1984);
+  });
+});
+
+describe("id generators", () => {
+  it("generates a nanoid of requested size", async () => {
+    const res = await auth({ size: 12 }, "/v1/nanoid");
+    expect(res.json().id).toHaveLength(12);
+  });
+  it("generates sortable ULIDs", async () => {
+    const res = await auth({ count: 2 }, "/v1/ulid");
+    const ids = res.json().ids;
+    expect(ids).toHaveLength(2);
+    expect(ids[0]).toMatch(/^[0-9A-Z]{26}$/);
+  });
+  it("generates a passphrase with N words", async () => {
+    const res = await auth({ words: 5, separator: "." }, "/v1/passphrase");
+    expect(res.json().passphrase.split(".")).toHaveLength(5);
+  });
+});
+
+describe("text diff & entities", () => {
+  it("diffs two texts", async () => {
+    const res = await auth({ a: "one\ntwo\nthree", b: "one\n2\nthree" }, "/v1/text/diff");
+    const b = res.json();
+    expect(b.added).toBe(1);
+    expect(b.removed).toBe(1);
+  });
+  it("encodes and decodes html entities", async () => {
+    const enc = (await auth({ text: "<a href=\"x\">", action: "encode" }, "/v1/html/entities")).json();
+    expect(enc.result).toBe("&lt;a href=&quot;x&quot;&gt;");
+    const dec = (await auth({ text: "&lt;b&gt;&#65;", action: "decode" }, "/v1/html/entities")).json();
+    expect(dec.result).toBe("<b>A");
+  });
+});
+
+describe("time diff", () => {
+  it("humanizes a duration", async () => {
+    const res = await auth({ from: 0, to: 90061 }, "/v1/time/diff");
+    expect(res.json().humanized).toBe("1 day, 1 hour");
+  });
+});
+
+describe("checksum", () => {
+  it("computes a known CRC32", async () => {
+    const res = await auth({ text: "123456789" }, "/v1/checksum/crc32");
+    expect(res.json().hex).toBe("cbf43926");
+  });
+});
+
 describe("usage", () => {
   it("reports counters for the caller", async () => {
     await auth({ input: "x" }, "/v1/hash");
