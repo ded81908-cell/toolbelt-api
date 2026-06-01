@@ -41,7 +41,7 @@ export async function buildServer(config: Config = loadConfig()): Promise<Fastif
       info: {
         title: "Toolbelt API",
         description:
-          "Pay-as-you-go developer utilities: QR codes, social/OG images, data conversion, hashing/encoding and generators. Zero AI cost.",
+          "Pay-as-you-go developer utilities: QR & barcodes, social/OG images, invoices, Markdown rendering, data conversion, hashing/encoding, generators, bulk endpoints, Japanese text tools and internationalisation (transliteration, phone, postal, currency). Zero AI cost.",
         version: "1.0.0",
       },
       components: {

@@ -50,9 +50,10 @@
       <span class="badge">DEVELOPER API</span>
       <h1>One <span>toolbelt</span> for the boring stuff.</h1>
       <p class="lead">
-        QR codes, social/OG images, JSON↔YAML↔CSV conversion, hashing, encoding and
-        generators — behind a single fast API. No AI bills, predictable pricing,
-        live in minutes.
+        QR &amp; barcodes, social/OG images, invoices, Markdown, data conversion,
+        hashing, generators, bulk endpoints, Japanese text tools and i18n
+        (transliteration, phone, postal, currency) — behind a single fast API.
+        No AI bills, predictable pricing, live in minutes.
       </p>
       <div class="cta">
         <a class="btn primary" href="/docs">Interactive docs →</a>
@@ -60,12 +61,15 @@
       </div>
 
       <div class="grid">
-        <div class="card"><h3>QR codes</h3><code>POST /v1/qr</code><p>PNG or SVG, themed, sized.</p></div>
+        <div class="card"><h3>QR &amp; barcodes</h3><code>POST /v1/qr</code><p>QR + Code128/EAN/UPC/PDF417. PNG or SVG.</p></div>
         <div class="card"><h3>OG images</h3><code>POST /v1/og-image</code><p>Social cards as SVG.</p></div>
         <div class="card"><h3>Convert</h3><code>POST /v1/convert</code><p>JSON ↔ YAML ↔ CSV.</p></div>
         <div class="card"><h3>Hash &amp; encode</h3><code>POST /v1/hash</code><p>SHA/MD5/HMAC, base64, hex.</p></div>
+        <div class="card"><h3>Documents</h3><code>POST /v1/invoice</code><p>Invoices (SVG) &amp; Markdown→HTML.</p></div>
+        <div class="card"><h3>🇯🇵 Japanese</h3><code>POST /v1/jp/convert</code><p>Width, kana &amp; romaji conversion.</p></div>
+        <div class="card"><h3>🌍 i18n</h3><code>POST /v1/phone</code><p>Transliterate, phone, postal, currency.</p></div>
+        <div class="card"><h3>Bulk</h3><code>POST /v1/qr/bulk</code><p>Up to 200 items per call.</p></div>
         <div class="card"><h3>Generators</h3><code>GET /v1/uuid</code><p>UUIDs, passwords, tokens, slugs.</p></div>
-        <div class="card"><h3>Usage</h3><code>GET /v1/usage</code><p>Track your own calls.</p></div>
       </div>
 
       <pre>curl -X POST https://your-host/v1/qr \

@@ -49,7 +49,7 @@ curl -X POST http://localhost:3000/v1/qr \
 
 ```bash
 npm run build      # tsc -> dist/
-npm test           # vitest, 14 tests
+npm test           # vitest, 32 tests
 npm run typecheck  # no-emit type check (also runs in CI)
 ```
 
