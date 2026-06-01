@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1130" viewBox="0 0 800 1130" font-family="'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif">
+  <rect width="800" height="1130" fill="#ffffff"/>
+  <rect x="0" y="0" width="800" height="8" fill="#2563eb"/>
+  <text x="56" y="76" font-size="38" font-weight="800" fill="#0f172a">INVOICE</text>
+  <text x="744" y="60" font-size="14" fill="#475569" text-anchor="end">No. INV-2026-001</text>
+  <text x="744" y="82" font-size="14" fill="#475569" text-anchor="end">Date: 2026-06-01</text>
+  
+  <text x="56" y="178" font-size="12" font-weight="700" fill="#94a3b8" letter-spacing="1">FROM</text><text x="56" y="200" font-size="14" fill="#334155">Toolbelt Inc.</text><text x="56" y="222" font-size="14" fill="#334155">billing@toolbelt.dev</text>
+  <text x="416" y="178" font-size="12" font-weight="700" fill="#94a3b8" letter-spacing="1">BILL TO</text><text x="416" y="200" font-size="14" fill="#334155">Acme Co.</text><text x="416" y="222" font-size="14" fill="#334155">Tokyo, JP</text>
+
+  <line x1="56" y1="156" x2="744" y2="156" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="56" y="174" font-size="12" font-weight="700" fill="#94a3b8">DESCRIPTION</text>
+  <text x="524" y="174" font-size="12" font-weight="700" fill="#94a3b8" text-anchor="end">QTY</text>
+  <text x="634" y="174" font-size="12" font-weight="700" fill="#94a3b8" text-anchor="end">UNIT</text>
+  <text x="744" y="174" font-size="12" font-weight="700" fill="#94a3b8" text-anchor="end">AMOUNT</text>
+  <text x="56" y="184" font-size="14" fill="#0f172a">API usage — Pro plan</text>
+    <text x="524" y="184" font-size="14" fill="#475569" text-anchor="end">1</text>
+    <text x="634" y="184" font-size="14" fill="#475569" text-anchor="end">$9.99</text>
+    <text x="744" y="184" font-size="14" fill="#0f172a" text-anchor="end">$9.99</text>
+    <text x="56" y="214" font-size="14" fill="#0f172a">Overage (10k requests)</text>
+    <text x="524" y="214" font-size="14" fill="#475569" text-anchor="end">10</text>
+    <text x="634" y="214" font-size="14" fill="#475569" text-anchor="end">$0.40</text>
+    <text x="744" y="214" font-size="14" fill="#0f172a" text-anchor="end">$4.00</text>
+  <line x1="56" y1="252" x2="744" y2="252" stroke="#e2e8f0" stroke-width="1"/>
+
+  <text x="634" y="278" font-size="14" fill="#475569" text-anchor="end">Subtotal</text>
+  <text x="744" y="278" font-size="14" fill="#0f172a" text-anchor="end">$13.99</text>
+  <text x="634" y="302" font-size="14" fill="#475569" text-anchor="end">Tax (10%)</text>
+  <text x="744" y="302" font-size="14" fill="#0f172a" text-anchor="end">$1.40</text>
+  <text x="634" y="332" font-size="18" font-weight="800" fill="#0f172a" text-anchor="end">Total</text>
+  <text x="744" y="332" font-size="18" font-weight="800" fill="#2563eb" text-anchor="end">$15.39</text>
+
+  <text x="56" y="380" font-size="12" font-weight="700" fill="#94a3b8">NOTES</text><text x="56" y="402" font-size="13" fill="#475569">Thank you for your business.</text>
+</svg>
