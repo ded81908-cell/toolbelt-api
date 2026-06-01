@@ -21,6 +21,14 @@ import { invoiceRoutes } from "./routes/invoice.js";
 import { intlRoutes } from "./routes/intl.js";
 import { currencyRoutes } from "./routes/currency.js";
 import { markdownRoutes } from "./routes/markdown.js";
+import { colorRoutes } from "./routes/color.js";
+import { textRoutes } from "./routes/text.js";
+import { datetimeRoutes } from "./routes/datetime.js";
+import { jwtRoutes } from "./routes/jwt.js";
+import { validateRoutes } from "./routes/validate.js";
+import { unitsRoutes } from "./routes/units.js";
+import { geoRoutes } from "./routes/geo.js";
+import { qrExtraRoutes } from "./routes/qrextra.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -41,7 +49,7 @@ export async function buildServer(config: Config = loadConfig()): Promise<Fastif
       info: {
         title: "Toolbelt API",
         description:
-          "Pay-as-you-go developer utilities: QR & barcodes, social/OG images, invoices, Markdown rendering, data conversion, hashing/encoding, generators, bulk endpoints, Japanese text tools and internationalisation (transliteration, phone, postal, currency). Zero AI cost.",
+          "Pay-as-you-go developer utilities: QR & barcodes (incl. Wi-Fi/vCard), social/OG images, invoices, Markdown, data conversion, hashing/encoding, JWT decode, generators, bulk endpoints, colour & text tools, unit/time/geo conversion, validators (email/card/IBAN), Japanese text tools and i18n (transliteration, phone, postal, currency). Zero AI cost.",
         version: "1.0.0",
       },
       components: {
@@ -99,6 +107,14 @@ export async function buildServer(config: Config = loadConfig()): Promise<Fastif
   await app.register(intlRoutes);
   await app.register(currencyRoutes);
   await app.register(markdownRoutes);
+  await app.register(colorRoutes);
+  await app.register(textRoutes);
+  await app.register(datetimeRoutes);
+  await app.register(jwtRoutes);
+  await app.register(validateRoutes);
+  await app.register(unitsRoutes);
+  await app.register(geoRoutes);
+  await app.register(qrExtraRoutes);
 
   return app;
 }

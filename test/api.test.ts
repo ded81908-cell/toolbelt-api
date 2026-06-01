@@ -281,6 +281,117 @@ describe("markdown", () => {
   });
 });
 
+describe("color", () => {
+  it("converts hex to rgb and hsl", async () => {
+    const res = await auth({ color: "#ff0000" }, "/v1/color/convert");
+    const b = res.json();
+    expect(b.rgb).toEqual({ r: 255, g: 0, b: 0 });
+    expect(b.hsl.h).toBe(0);
+  });
+  it("computes WCAG contrast (black on white = 21)", async () => {
+    const res = await auth({ foreground: "#000000", background: "#ffffff" }, "/v1/color/contrast");
+    const b = res.json();
+    expect(b.ratio).toBe(21);
+    expect(b.normalText.AAA).toBe(true);
+  });
+});
+
+describe("text", () => {
+  it("converts to snake_case", async () => {
+    const res = await auth({ text: "Hello World API", target: "snake" }, "/v1/text/case");
+    expect(res.json().result).toBe("hello_world_api");
+  });
+  it("computes word stats", async () => {
+    const res = await auth({ text: "one two three." }, "/v1/text/stats");
+    expect(res.json().words).toBe(3);
+  });
+  it("generates lorem words", async () => {
+    const res = await auth({ units: "words", count: 5 }, "/v1/lorem");
+    expect(res.json().text.split(" ")).toHaveLength(5);
+  });
+  it("strips html tags", async () => {
+    const res = await auth({ html: "<p>Hi <b>there</b></p><script>x()</script>" }, "/v1/html/strip");
+    expect(res.json().text).toBe("Hi there");
+  });
+});
+
+describe("time", () => {
+  it("converts unix to iso", async () => {
+    const res = await auth({ input: 0, timezone: "UTC" }, "/v1/time/convert");
+    expect(res.json().iso).toBe("1970-01-01T00:00:00.000Z");
+  });
+});
+
+describe("jwt", () => {
+  it("decodes and verifies an HS256 token", async () => {
+    // {"alg":"HS256"}.{"sub":"42"} signed with secret "secret"
+    const { createHmac } = await import("node:crypto");
+    const h = Buffer.from(JSON.stringify({ alg: "HS256", typ: "JWT" })).toString("base64url");
+    const p = Buffer.from(JSON.stringify({ sub: "42" })).toString("base64url");
+    const sig = createHmac("sha256", "secret").update(`${h}.${p}`).digest("base64url");
+    const res = await auth({ token: `${h}.${p}.${sig}`, secret: "secret" }, "/v1/jwt/decode");
+    const b = res.json();
+    expect(b.payload.sub).toBe("42");
+    expect(b.signatureValid).toBe(true);
+  });
+});
+
+describe("validation", () => {
+  it("validates a Luhn-valid card and detects Visa", async () => {
+    const res = await auth({ number: "4111 1111 1111 1111" }, "/v1/validate/creditcard");
+    expect(res.json()).toEqual({ valid: true, brand: "Visa" });
+  });
+  it("normalises a gmail address", async () => {
+    const res = await auth({ email: "John.Doe+spam@Gmail.com" }, "/v1/validate/email");
+    expect(res.json().normalized).toBe("johndoe@gmail.com");
+  });
+  it("validates an IBAN", async () => {
+    const res = await auth({ iban: "GB82 WEST 1234 5698 7654 32" }, "/v1/validate/iban");
+    expect(res.json().valid).toBe(true);
+  });
+  it("scores a strong password higher than a weak one", async () => {
+    const weak = (await auth({ password: "abc" }, "/v1/password/strength")).json();
+    const strong = (await auth({ password: "Tr0ub4dour&3xplosion!" }, "/v1/password/strength")).json();
+    expect(strong.score).toBeGreaterThan(weak.score);
+  });
+});
+
+describe("units", () => {
+  it("converts km to mi", async () => {
+    const res = await auth({ value: 1, from: "km", to: "mi" }, "/v1/units/convert");
+    expect(res.json().result).toBeCloseTo(0.621371, 4);
+  });
+  it("converts celsius to fahrenheit", async () => {
+    const res = await auth({ value: 100, from: "c", to: "f" }, "/v1/units/convert");
+    expect(res.json().result).toBe(212);
+  });
+});
+
+describe("geo", () => {
+  it("computes distance between two coordinates", async () => {
+    // Tokyo -> Osaka ~ 400km
+    const res = await auth(
+      { from: { lat: 35.68, lon: 139.77 }, to: { lat: 34.69, lon: 135.5 }, unit: "km" },
+      "/v1/geo/distance",
+    );
+    expect(res.json().distance).toBeGreaterThan(380);
+    expect(res.json().distance).toBeLessThan(420);
+  });
+});
+
+describe("qr extra", () => {
+  it("generates a Wi-Fi QR PNG", async () => {
+    const res = await auth({ ssid: "MyNet", password: "p@ss", encryption: "WPA" }, "/v1/qr/wifi");
+    expect(res.statusCode).toBe(200);
+    expect(res.headers["content-type"]).toBe("image/png");
+  });
+  it("generates a vCard QR SVG", async () => {
+    const res = await auth({ name: "Jane Doe", email: "jane@x.com", format: "svg" }, "/v1/qr/vcard");
+    expect(res.headers["content-type"]).toContain("image/svg");
+    expect(res.body).toContain("<svg");
+  });
+});
+
 describe("usage", () => {
   it("reports counters for the caller", async () => {
     await auth({ input: "x" }, "/v1/hash");

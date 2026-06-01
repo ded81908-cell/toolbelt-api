@@ -27,6 +27,16 @@ gross margin is near 100%.
 | `POST /v1/postal` | 🌍 Validate & normalise postal codes (JP/US/CA/GB/DE/FR) |
 | `POST /v1/currency/convert` | 🌍 Convert amounts (offline rates or cached live) |
 | `POST /v1/markdown` | Markdown → sanitized, print-ready HTML |
+| `POST /v1/qr/wifi` · `/v1/qr/vcard` | Wi-Fi join & contact (vCard) QR codes |
+| `POST /v1/color/convert` · `/v1/color/contrast` | hex⇄rgb⇄hsl + WCAG contrast |
+| `POST /v1/text/case` · `/v1/text/stats` · `/v1/html/strip` | case convert, stats, tag stripping |
+| `POST /v1/lorem` | Lorem ipsum placeholder text |
+| `POST /v1/time/convert` | Unix⇄ISO + timezone formatting |
+| `POST /v1/jwt/decode` | Decode (+ optional HMAC verify) a JWT |
+| `POST /v1/units/convert` | Length/mass/data/temperature/… conversion |
+| `POST /v1/geo/distance` | Great-circle (Haversine) distance |
+| `POST /v1/validate/email` · `/creditcard` · `/iban` | Validators (Luhn, mod-97, syntax) |
+| `POST /v1/password/strength` | Entropy & crack-time estimate |
 | `GET  /v1/usage` | The calling client's own usage counters |
 | `GET  /health` | Liveness (unauthenticated) |
 | `GET  /docs` | Interactive OpenAPI (Swagger UI) |
@@ -49,7 +59,7 @@ curl -X POST http://localhost:3000/v1/qr \
 
 ```bash
 npm run build      # tsc -> dist/
-npm test           # vitest, 32 tests
+npm test           # vitest, 49 tests
 npm run typecheck  # no-emit type check (also runs in CI)
 ```
 
