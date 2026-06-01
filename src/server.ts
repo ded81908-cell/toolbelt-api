@@ -18,6 +18,9 @@ import { jpRoutes } from "./routes/jp.js";
 import { bulkRoutes } from "./routes/bulk.js";
 import { barcodeRoutes } from "./routes/barcode.js";
 import { invoiceRoutes } from "./routes/invoice.js";
+import { intlRoutes } from "./routes/intl.js";
+import { currencyRoutes } from "./routes/currency.js";
+import { markdownRoutes } from "./routes/markdown.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -93,6 +96,9 @@ export async function buildServer(config: Config = loadConfig()): Promise<Fastif
   await app.register(bulkRoutes);
   await app.register(barcodeRoutes);
   await app.register(invoiceRoutes);
+  await app.register(intlRoutes);
+  await app.register(currencyRoutes);
+  await app.register(markdownRoutes);
 
   return app;
 }

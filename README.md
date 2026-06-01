@@ -21,6 +21,12 @@ gross margin is near 100%.
 | `POST /v1/hash/bulk` | Hash many strings in one call |
 | `POST /v1/barcode` | Code128 / EAN / UPC / ITF / DataMatrix / PDF417 |
 | `POST /v1/invoice` | Render a printable invoice (SVG) with computed totals |
+| `POST /v1/translit` | 🌍 Transliterate to Latin (accents, Cyrillic, Greek) |
+| `POST /v1/slug/intl` | 🌍 URL slug from any-language text |
+| `POST /v1/phone` | 🌍 Parse/validate/format phone numbers (E.164, …) |
+| `POST /v1/postal` | 🌍 Validate & normalise postal codes (JP/US/CA/GB/DE/FR) |
+| `POST /v1/currency/convert` | 🌍 Convert amounts (offline rates or cached live) |
+| `POST /v1/markdown` | Markdown → sanitized, print-ready HTML |
 | `GET  /v1/usage` | The calling client's own usage counters |
 | `GET  /health` | Liveness (unauthenticated) |
 | `GET  /docs` | Interactive OpenAPI (Swagger UI) |
@@ -109,8 +115,10 @@ src/
   usage.ts        in-memory usage meter (billing export point)
   lib/csv.ts      dependency-free CSV <-> JSON
   lib/jp.ts       Japanese text (kana, width, romaji) — no deps
+  lib/translit.ts transliteration (Latin/Cyrillic/Greek) — no deps
   routes/         qr, ogimage, convert, hash, generate, meta,
-                  jp, bulk, barcode, invoice
+                  jp, bulk, barcode, invoice,
+                  intl (translit/phone/postal), currency, markdown
 public/index.html landing page
 test/api.test.ts  end-to-end tests
 ```

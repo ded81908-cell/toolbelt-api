@@ -211,6 +211,76 @@ describe("invoice", () => {
   });
 });
 
+describe("intl / transliteration", () => {
+  it("strips Latin diacritics", async () => {
+    const res = await auth({ text: "Crème brûlée" }, "/v1/translit");
+    expect(res.json().result).toBe("Creme brulee");
+  });
+
+  it("romanises Cyrillic", async () => {
+    const res = await auth({ text: "Москва" }, "/v1/translit");
+    expect(res.json().result).toBe("Moskva");
+  });
+
+  it("builds an intl slug from Greek", async () => {
+    const res = await auth({ text: "Ελλάδα 2026!" }, "/v1/slug/intl");
+    expect(res.json().slug).toBe("ellada-2026");
+  });
+
+  it("parses and formats a phone number", async () => {
+    const res = await auth({ number: "+81 90-1234-5678" }, "/v1/phone");
+    const body = res.json();
+    expect(body.valid).toBe(true);
+    expect(body.country).toBe("JP");
+    expect(body.e164).toBe("+819012345678");
+  });
+
+  it("normalises a Japanese postal code", async () => {
+    const res = await auth({ code: "1500001", country: "JP" }, "/v1/postal");
+    expect(res.json().formatted).toBe("150-0001");
+  });
+});
+
+describe("currency", () => {
+  it("converts using provided rates (offline)", async () => {
+    const res = await auth(
+      { from: "USD", to: "JPY", amount: 10, base: "USD", rates: { JPY: 150, EUR: 0.9 } },
+      "/v1/currency/convert",
+    );
+    const body = res.json();
+    expect(body.source).toBe("provided");
+    expect(body.result).toBe(1500);
+  });
+
+  it("cross-converts non-base currencies", async () => {
+    const res = await auth(
+      { from: "EUR", to: "JPY", amount: 10, base: "USD", rates: { JPY: 150, EUR: 0.5 } },
+      "/v1/currency/convert",
+    );
+    // 10 EUR -> 20 USD -> 3000 JPY
+    expect(res.json().result).toBe(3000);
+  });
+});
+
+describe("markdown", () => {
+  it("renders markdown to html and strips scripts", async () => {
+    const res = await auth(
+      { markdown: "# Hi\n\n**bold** <script>alert(1)</script>" },
+      "/v1/markdown",
+    );
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toContain("<h1");
+    expect(res.body).toContain("<strong>bold</strong>");
+    expect(res.body).not.toContain("<script>");
+  });
+
+  it("wraps a full document when requested", async () => {
+    const res = await auth({ markdown: "# Doc", fullDocument: true, title: "T" }, "/v1/markdown");
+    expect(res.body).toContain("<!doctype html>");
+    expect(res.body).toContain("<title>T</title>");
+  });
+});
+
 describe("usage", () => {
   it("reports counters for the caller", async () => {
     await auth({ input: "x" }, "/v1/hash");
