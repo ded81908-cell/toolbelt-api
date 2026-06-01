@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="360" viewBox="0 0 1440 360" role="img" aria-label="Toolbelt API">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#38bdf8"/>
+      <stop offset="0.55" stop-color="#4f76f6"/>
+      <stop offset="1" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <!-- icon -->
+  <g transform="translate(36,70) scale(0.43)">
+    <rect x="16" y="16" width="480" height="480" rx="116" fill="url(#g)"/>
+    <path fill="#ffffff" fill-rule="evenodd"
+      d="M256 106 L385.9 181 L385.9 331 L256 406 L126.1 331 L126.1 181 Z
+         M192 256 a64 64 0 1 0 128 0 a64 64 0 1 0 -128 0 Z"/>
+  </g>
+  <!-- wordmark -->
+  <text x="288" y="196" font-family="'Segoe UI', system-ui, -apple-system, 'DejaVu Sans', Helvetica, Arial, sans-serif"
+        font-size="148" font-weight="800" letter-spacing="-2" fill="#0f172a">toolbelt</text>
+  <text x="292" y="266" font-family="'Segoe UI', system-ui, -apple-system, 'DejaVu Sans', Helvetica, Arial, sans-serif"
+        font-size="44" font-weight="700" letter-spacing="9" fill="#4f76f6">API · DEVELOPER UTILITIES</text>
+</svg>
