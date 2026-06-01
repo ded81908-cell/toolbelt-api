@@ -131,6 +131,86 @@ describe("generators", () => {
   });
 });
 
+describe("japanese", () => {
+  it("converts full-width to half-width", async () => {
+    const res = await auth({ text: "ＡＢＣ１２３", operation: "hankaku" }, "/v1/jp/convert");
+    expect(res.json().result).toBe("ABC123");
+  });
+
+  it("converts hiragana to katakana", async () => {
+    const res = await auth({ text: "とうきょう", operation: "katakana" }, "/v1/jp/convert");
+    expect(res.json().result).toBe("トウキョウ");
+  });
+
+  it("romanizes kana", async () => {
+    const res = await auth({ text: "にっぽん", operation: "romaji" }, "/v1/jp/convert");
+    expect(res.json().result).toBe("nippon");
+  });
+
+  it("builds a romaji slug from Japanese", async () => {
+    const res = await auth({ text: "東京タワー" }, "/v1/jp/slug");
+    // 東京 is kanji (passes through), タワー -> tawa
+    expect(res.json().slug).toContain("tawa");
+  });
+});
+
+describe("bulk", () => {
+  it("generates multiple QR codes", async () => {
+    const res = await auth(
+      { items: [{ text: "a", id: "x" }, { text: "b" }], format: "png" },
+      "/v1/qr/bulk",
+    );
+    const body = res.json();
+    expect(body.count).toBe(2);
+    expect(body.results[0].id).toBe("x");
+    expect(body.results[0].data).toMatch(/^data:image\/png;base64,/);
+  });
+
+  it("hashes many inputs", async () => {
+    const res = await auth({ inputs: ["a", "b", "c"] }, "/v1/hash/bulk");
+    expect(res.json().digests).toHaveLength(3);
+  });
+});
+
+describe("barcode", () => {
+  it("generates a code128 PNG", async () => {
+    const res = await auth({ type: "code128", text: "ABC-123" }, "/v1/barcode");
+    expect(res.statusCode).toBe(200);
+    expect(res.headers["content-type"]).toBe("image/png");
+    expect(res.rawPayload.slice(0, 4).toString("hex")).toBe("89504e47");
+  });
+
+  it("returns 422 for an invalid EAN-13 value", async () => {
+    const res = await auth({ type: "ean13", text: "not-a-number" }, "/v1/barcode");
+    expect(res.statusCode).toBe(422);
+  });
+});
+
+describe("invoice", () => {
+  it("renders an SVG with computed total", async () => {
+    const res = await auth(
+      {
+        number: "INV-001",
+        date: "2026-06-01",
+        currency: "USD",
+        taxRate: 10,
+        from: { name: "Acme" },
+        to: { name: "Client" },
+        items: [
+          { description: "Design", quantity: 2, unitPrice: 100 },
+          { description: "Hosting", quantity: 1, unitPrice: 50 },
+        ],
+      },
+      "/v1/invoice",
+    );
+    expect(res.statusCode).toBe(200);
+    expect(res.headers["content-type"]).toContain("image/svg+xml");
+    // subtotal 250, +10% tax = 275
+    expect(res.body).toContain("INVOICE");
+    expect(res.body).toContain("$275.00");
+  });
+});
+
 describe("usage", () => {
   it("reports counters for the caller", async () => {
     await auth({ input: "x" }, "/v1/hash");

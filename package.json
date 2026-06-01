@@ -33,6 +33,7 @@
     "@fastify/static": "^7.0.4",
     "@fastify/swagger": "^8.15.0",
     "@fastify/swagger-ui": "^4.0.1",
+    "bwip-js": "^4.11.1",
     "fastify": "^4.28.1",
     "js-yaml": "^4.1.0",
     "qrcode": "^1.5.4"

@@ -14,6 +14,10 @@ import { convertRoutes } from "./routes/convert.js";
 import { hashRoutes } from "./routes/hash.js";
 import { generateRoutes } from "./routes/generate.js";
 import { metaRoutes } from "./routes/meta.js";
+import { jpRoutes } from "./routes/jp.js";
+import { bulkRoutes } from "./routes/bulk.js";
+import { barcodeRoutes } from "./routes/barcode.js";
+import { invoiceRoutes } from "./routes/invoice.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -85,6 +89,10 @@ export async function buildServer(config: Config = loadConfig()): Promise<Fastif
   await app.register(convertRoutes);
   await app.register(hashRoutes);
   await app.register(generateRoutes);
+  await app.register(jpRoutes);
+  await app.register(bulkRoutes);
+  await app.register(barcodeRoutes);
+  await app.register(invoiceRoutes);
 
   return app;
 }

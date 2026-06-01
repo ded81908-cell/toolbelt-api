@@ -15,6 +15,12 @@ gross margin is near 100%.
 | `GET  /v1/password` | Cryptographically strong passwords |
 | `GET  /v1/token` | URL-safe random tokens |
 | `POST /v1/slug` | Slugify a string |
+| `POST /v1/jp/convert` | 🇯🇵 Full-width⇄half-width, hiragana⇄katakana, kana→romaji |
+| `POST /v1/jp/slug` | 🇯🇵 Romaji slug from Japanese text |
+| `POST /v1/qr/bulk` | Up to 200 QR codes in one call |
+| `POST /v1/hash/bulk` | Hash many strings in one call |
+| `POST /v1/barcode` | Code128 / EAN / UPC / ITF / DataMatrix / PDF417 |
+| `POST /v1/invoice` | Render a printable invoice (SVG) with computed totals |
 | `GET  /v1/usage` | The calling client's own usage counters |
 | `GET  /health` | Liveness (unauthenticated) |
 | `GET  /docs` | Interactive OpenAPI (Swagger UI) |
@@ -102,7 +108,9 @@ src/
   auth.ts         API-key / RapidAPI / anonymous auth
   usage.ts        in-memory usage meter (billing export point)
   lib/csv.ts      dependency-free CSV <-> JSON
-  routes/         qr, ogimage, convert, hash, generate, meta
+  lib/jp.ts       Japanese text (kana, width, romaji) — no deps
+  routes/         qr, ogimage, convert, hash, generate, meta,
+                  jp, bulk, barcode, invoice
 public/index.html landing page
 test/api.test.ts  end-to-end tests
 ```
