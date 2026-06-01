@@ -18,7 +18,7 @@ export async function datetimeRoutes(app: FastifyInstance): Promise<void> {
         body: {
           type: "object",
           properties: {
-            input: { type: ["string", "number"] },
+            input: { anyOf: [{ type: "string" }, { type: "number" }] },
             timezone: { type: "string", maxLength: 64, default: "UTC" },
             locale: { type: "string", maxLength: 16, default: "en-US" },
           },
@@ -73,7 +73,10 @@ export async function datetimeRoutes(app: FastifyInstance): Promise<void> {
         body: {
           type: "object",
           required: ["from"],
-          properties: { from: { type: ["string", "number"] }, to: { type: ["string", "number"] } },
+          properties: {
+            from: { anyOf: [{ type: "string" }, { type: "number" }] },
+            to: { anyOf: [{ type: "string" }, { type: "number" }] },
+          },
         },
       },
     },

@@ -124,7 +124,7 @@ export async function numberRoutes(app: FastifyInstance): Promise<void> {
           type: "object",
           required: ["value"],
           properties: {
-            value: { type: ["string", "number"] },
+            value: { anyOf: [{ type: "string" }, { type: "number" }] },
             to: { type: "string", enum: ["roman", "arabic"], default: "roman" },
           },
         },

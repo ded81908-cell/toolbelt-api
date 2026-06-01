@@ -56,6 +56,10 @@ export async function buildServer(config: Config = loadConfig()): Promise<Fastif
           "Pay-as-you-go developer utilities: QR & barcodes (incl. Wi-Fi/vCard), social/OG images, invoices, Markdown, data conversion, hashing/encoding, JWT decode, generators, bulk endpoints, colour & text tools, unit/time/geo conversion, validators (email/card/IBAN), Japanese text tools and i18n (transliteration, phone, postal, currency). Zero AI cost.",
         version: "1.0.0",
       },
+      servers:
+        process.env.PUBLIC_URL || process.env.RENDER_EXTERNAL_URL
+          ? [{ url: (process.env.PUBLIC_URL || process.env.RENDER_EXTERNAL_URL)!.replace(/\/$/, "") }]
+          : [],
       components: {
         securitySchemes: {
           apiKey: { type: "apiKey", name: "X-API-Key", in: "header" },
