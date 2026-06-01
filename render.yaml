@@ -1,0 +1,17 @@
+# One-click deploy on Render (https://render.com). Free/cheap, no card to start.
+services:
+  - type: web
+    name: toolbelt-api
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "3000"
+      # Set these in the Render dashboard (do not commit secrets):
+      - key: API_KEYS
+        sync: false
+      - key: RAPIDAPI_PROXY_SECRET
+        sync: false

@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Toolbelt API — Complete System Guide</title>
+<style>
+  :root{
+    --bg:#0a0e14; --panel:#0f141c; --panel2:#121925; --line:#1e2735;
+    --text:#e6edf3; --muted:#8b97a7; --dim:#5b6675;
+    --green:#3fb950; --greenbg:#10331b; --blue:#4aa3ff; --bluebg:#0d2740;
+    --purple:#a371f7; --amber:#e3b341; --red:#f06f5b; --pink:#f778ba;
+    --term:#070b11; --termline:#161d29;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    -webkit-font-smoothing:antialiased;line-height:1.6}
+  .wrap{max-width:880px;margin:0 auto;padding:0 16px 80px}
+  code,kbd,.mono{font-family:"SF Mono",Menlo,Consolas,"Roboto Mono",monospace}
+
+  /* hero */
+  .hero{background:linear-gradient(160deg,#101826 0%,#0b1019 100%);
+    border:1px solid var(--line);border-radius:18px;padding:26px 24px;margin:24px 0 18px;
+    box-shadow:0 10px 40px rgba(0,0,0,.4)}
+  .eyebrow{color:var(--green);font:600 11px/1 "SF Mono",monospace;letter-spacing:2px;text-transform:uppercase}
+  .hero h1{margin:12px 0 4px;font-size:26px;font-weight:800;letter-spacing:.3px}
+  .hero p.sub{margin:2px 0 16px;color:var(--muted);font-size:15px}
+  .badges{display:flex;flex-wrap:wrap;gap:8px}
+  .badge{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;
+    font-size:12px;font-weight:600;border:1px solid transparent}
+  .badge.green{background:var(--greenbg);color:#7ee787;border-color:#1c5a2e}
+  .badge.blue{background:var(--bluebg);color:#79c0ff;border-color:#194a73}
+  .badge.purple{background:#23193d;color:#d2b3ff;border-color:#3f2d66}
+  .badge.amber{background:#332a10;color:#f2cc60;border-color:#5c4a16}
+  .badge.red{background:#3a1714;color:#ff9b8a;border-color:#6b2820}
+
+  /* tabs */
+  .tabs{position:sticky;top:0;z-index:5;display:flex;gap:4px;overflow-x:auto;
+    background:rgba(10,14,20,.92);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);padding:10px 0;margin-bottom:22px}
+  .tab{flex:0 0 auto;padding:8px 14px;border-radius:10px;border:1px solid transparent;
+    color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;background:none}
+  .tab:hover{color:var(--text);background:var(--panel)}
+  .tab.active{color:#fff;background:var(--panel2);border-color:var(--line)}
+  .tab .dot{color:var(--green);margin-right:6px}
+
+  .panel{display:none;animation:fade .25s ease}
+  .panel.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+  h2.sec{font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);
+    margin:30px 0 14px;font-weight:700}
+  h3{font-size:18px;margin:22px 0 8px}
+  p{color:#c9d3df}
+  .muted{color:var(--muted)}
+
+  /* step */
+  .step{display:flex;gap:14px;margin:18px 0}
+  .step .num{flex:0 0 28px;height:28px;border-radius:50%;background:var(--greenbg);
+    color:#7ee787;border:1px solid #1c5a2e;display:flex;align-items:center;justify-content:center;
+    font:700 13px/1 "SF Mono",monospace;margin-top:2px}
+  .step .body{flex:1;min-width:0}
+  .step .body h4{margin:2px 0 4px;font-size:16px}
+  .step .body .hint{color:var(--muted);font-size:13px;margin:0 0 8px}
+
+  /* terminal */
+  .term{background:var(--term);border:1px solid var(--termline);border-radius:12px;overflow:hidden;margin:10px 0 4px}
+  .term .bar{display:flex;align-items:center;justify-content:space-between;
+    padding:8px 12px;border-bottom:1px solid var(--termline);background:#0b1018}
+  .term .bar .label{color:var(--blue);font:700 10px/1 "SF Mono",monospace;letter-spacing:2px}
+  .term .bar .copy{background:#161d29;border:1px solid #232c3b;color:#9fb0c3;
+    font-size:11px;padding:3px 9px;border-radius:7px;cursor:pointer}
+  .term .bar .copy:active{transform:scale(.96)}
+  .term pre{margin:0;padding:14px 16px;overflow-x:auto;font-size:13px;line-height:1.7;color:#cbd5e1}
+  .term .c{color:#6b7787}     /* comment */
+  .term .k{color:#79c0ff}     /* keyword/cmd */
+  .term .s{color:#7ee787}     /* string */
+  .term .v{color:#f2cc60}     /* var */
+
+  /* callout */
+  .note{display:flex;gap:12px;background:var(--panel);border:1px solid var(--line);
+    border-left:3px solid var(--blue);border-radius:10px;padding:13px 15px;margin:16px 0;font-size:14px;color:#c9d3df}
+  .note.warn{border-left-color:var(--amber)}
+  .note.ok{border-left-color:var(--green)}
+  .note .ic{font-size:16px;line-height:1.4}
+
+  /* diagram */
+  .diagram{background:var(--term);border:1px solid var(--termline);border-radius:12px;
+    padding:18px;margin:14px 0;overflow-x:auto}
+  .diagram pre{margin:0;font-size:12.5px;line-height:1.55;color:#9fb4cc}
+
+  /* cards/table */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:14px 0}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .card h4{margin:0 0 6px;font-size:15px}
+  .card .role{color:var(--muted);font-size:13px}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+  td code{background:#0d1622;padding:2px 6px;border-radius:5px;color:#79c0ff;font-size:12.5px}
+  .pill{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700}
+  .pill.free{background:#1f2733;color:#9fb0c3}
+  .pill.pro{background:var(--bluebg);color:#79c0ff}
+  .pill.ultra{background:#23193d;color:#d2b3ff}
+
+  .foot{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);color:var(--dim);font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="eyebrow">◇ Complete System Guide v1.0</div>
+    <h1>Toolbelt API 収益化システム</h1>
+    <p class="sub">AI不使用の軽量ユーティリティAPI ＋ RapidAPI 従量課金 ＋ 自動デプロイ</p>
+    <div class="badges">
+      <span class="badge green">● AIコスト 0</span>
+      <span class="badge blue">⛁ 51 エンドポイント</span>
+      <span class="badge purple">⟳ push で自動デプロイ</span>
+      <span class="badge amber">¥ 従量課金（RapidAPI）</span>
+      <span class="badge red">◎ 1コード → 2出品</span>
+    </div>
+  </div>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-tab="overview"><span class="dot">●</span>概要</button>
+    <button class="tab" data-tab="arch"><span class="dot">●</span>構成・流れ</button>
+    <button class="tab" data-tab="auth"><span class="dot">●</span>認証・課金</button>
+    <button class="tab" data-tab="deploy"><span class="dot">●</span>デプロイ</button>
+    <button class="tab" data-tab="features"><span class="dot">●</span>機能一覧</button>
+    <button class="tab" data-tab="setup"><span class="dot">●</span>初回手順</button>
+  </nav>
+
+  <!-- OVERVIEW -->
+  <section class="panel active" id="overview">
+    <h2 class="sec">A. このシステムは何か</h2>
+    <p><strong>AIを一切使わない、軽量な開発者向けユーティリティAPIを1本だけ作り、RapidAPI（APIのマーケットプレイス）で従量課金で売る</strong>仕組みです。
+    課金・利用者管理・APIキー発行は RapidAPI が肩代わりするので、サーバーは「正しいRapidAPI経由か？」だけ確認すれば済みます。</p>
+
+    <div class="note ok"><span class="ic">✓</span><div><strong>低コスト構造：</strong>CPUをほとんど使わない処理ばかり（QR・ハッシュ・変換・画像SVG等）。AI不使用なのでトークン代ゼロ。サーバーは無料〜数百円/月。</div></div>
+
+    <h2 class="sec">登場人物は4つだけ</h2>
+    <div class="grid">
+      <div class="card"><h4>① あなた</h4><div class="role">コードを GitHub に置く。手を動かすのは最初の1回だけ。</div></div>
+      <div class="card"><h4>② GitHub → Render</h4><div class="role">push すると Render（API本体が動くサーバー）へ自動デプロイ。</div></div>
+      <div class="card"><h4>③ RapidAPI</h4><div class="role">販売窓口。登録・課金・回数制限・鍵発行を全部代行。</div></div>
+      <div class="card"><h4>④ 利用者</h4><div class="role">世界中の開発者。RapidAPI経由でAPIを叩く（彼らが支払う）。</div></div>
+    </div>
+
+    <div class="note"><span class="ic">◎</span><div><strong>1コード → 2出品：</strong>コードは1本のまま、RapidAPIの出品を「日本向け（日本語・円圏）」と「グローバル（英語・ドル圏）」の2枚にして同時展開。追加開発コストはほぼゼロ。</div></div>
+  </section>
+
+  <!-- ARCHITECTURE -->
+  <section class="panel" id="arch">
+    <h2 class="sec">B. 全体構成図</h2>
+    <div class="diagram"><pre>
+        ┌──────────┐  git push  ┌───────────────┐
+あなた →│  GitHub   │ ─────────▶ │    Render      │ ← API本体
+        │(ソース置場)│  自動デプロイ │ (Docker/Node)  │  xxx.onrender.com
+        └──────────┘            └───────▲────────┘
+                                        │ プロキシ秘密鍵で
+                                        │ 認証された通信のみ信頼
+        ┌──────────┐  API呼出   ┌───────┴────────┐
+利用者 →│ RapidAPI  │ ─────────▶ │  あなたの API   │
+        │ 課金/制限 │            └────────────────┘
+        └──────────┘
+    </pre></div>
+
+    <h2 class="sec">リクエストの流れ（1回の呼び出し）</h2>
+    <div class="step"><div class="num">1</div><div class="body"><h4>RapidAPI ゲートウェイ</h4><p class="hint">利用者の残回数チェック → 課金 +1 → 秘密ヘッダ付きで転送</p></div></div>
+    <div class="step"><div class="num">2</div><div class="body"><h4>onRequest フック（認証）</h4><p class="hint">X-RapidAPI-Proxy-Secret を検証。合致しなければ 401。</p></div></div>
+    <div class="step"><div class="num">3</div><div class="body"><h4>レート制限</h4><p class="hint">ティア別の「1分あたり上限」を確認（瞬間スパイク防止）。</p></div></div>
+    <div class="step"><div class="num">4</div><div class="body"><h4>ルート処理 → 応答</h4><p class="hint">例：QRを生成して返す。onResponse で利用メーターに +1。</p></div></div>
+  </section>
+
+  <!-- AUTH -->
+  <section class="panel" id="auth">
+    <h2 class="sec">C. 認証の3経路（src/auth.ts）</h2>
+    <table>
+      <tr><th>優先</th><th>経路</th><th>判定</th><th>ティア</th></tr>
+      <tr><td>1</td><td>RapidAPI経由</td><td><code>X-RapidAPI-Proxy-Secret</code> 一致</td><td><span class="pill pro">pro</span></td></tr>
+      <tr><td>2</td><td>直接APIキー</td><td><code>X-API-Key</code> が登録済み</td><td>キー次第</td></tr>
+      <tr><td>3</td><td>匿名(dev)</td><td><code>ALLOW_ANONYMOUS=true</code></td><td><span class="pill free">free</span></td></tr>
+    </table>
+    <div class="note warn"><span class="ic">!</span><div>本番では「1」が主役。RapidAPI以外の直アクセスは秘密鍵を知らず弾かれるので、<strong>課金を迂回されない</strong>設計です。</div></div>
+
+    <h2 class="sec">ティアとレート制限</h2>
+    <table>
+      <tr><th>ティア</th><th>1分上限(既定)</th><th>用途</th></tr>
+      <tr><td><span class="pill free">free</span></td><td>30</td><td>無料プラン／お試し</td></tr>
+      <tr><td><span class="pill pro">pro</span></td><td>300</td><td>有料プラン（RapidAPI既定）</td></tr>
+      <tr><td><span class="pill ultra">ultra</span></td><td>3000</td><td>大口・上位プラン</td></tr>
+    </table>
+
+    <h2 class="sec">環境変数（Renderダッシュボードで設定）</h2>
+    <table>
+      <tr><th>変数</th><th>説明</th></tr>
+      <tr><td><code>RAPIDAPI_PROXY_SECRET</code></td><td>本番で必須。RapidAPIのSecurity設定の値</td></tr>
+      <tr><td><code>API_KEYS</code></td><td>直販用。<code>key:tier</code> をカンマ区切り</td></tr>
+      <tr><td><code>ALLOW_ANONYMOUS</code></td><td>devのみ true。本番は false</td></tr>
+      <tr><td><code>RATE_LIMIT_*</code></td><td>FREE/PRO/ULTRA の1分上限を上書き</td></tr>
+    </table>
+    <div class="note"><span class="ic">🔒</span><div>秘密はGitに置かない。<code>render.yaml</code> は <code>sync:false</code> にしてあり、実値はダッシュボードのみで入力します。</div></div>
+  </section>
+
+  <!-- DEPLOY -->
+  <section class="panel" id="deploy">
+    <h2 class="sec">D. デプロイ設計（Render + Docker）</h2>
+    <p>Dockerのmulti-stageビルドで最小イメージ化、<code>render.yaml</code> でGitHub連携 → <strong>push で自動デプロイ</strong>。<code>/health</code> がヘルスチェックを返します。</p>
+
+    <h3>ローカルで動作確認</h3>
+    <div class="term">
+      <div class="bar"><span class="label">TERMINAL</span><button class="copy">コピー</button></div>
+<pre><span class="c"># 依存をインストールして開発サーバー起動</span>
+<span class="k">npm</span> install
+<span class="k">npm</span> run dev   <span class="c"># → http://localhost:3000/docs を開く</span>
+
+<span class="c"># テスト（32件）</span>
+<span class="k">npm</span> test</pre>
+    </div>
+
+    <h3>本番へ反映（自動デプロイ）</h3>
+    <div class="term">
+      <div class="bar"><span class="label">TERMINAL</span><button class="copy">コピー</button></div>
+<pre><span class="c"># コードを push すると Render が自動でビルド＆切替</span>
+<span class="k">git</span> add -A
+<span class="k">git</span> commit -m <span class="s">"update"</span>
+<span class="k">git</span> push</pre>
+    </div>
+
+    <div class="diagram"><pre>
+git push → GitHub → Render検知 → docker build → 起動 → /health確認 → 切替
+    </pre></div>
+    <div class="note ok"><span class="ic">✓</span><div>以降の機能追加は「実装 → push → 自動デプロイ → RapidAPI反映」で回り、あなたの定常作業はほぼ料金表の微調整だけです。</div></div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="panel" id="features">
+    <h2 class="sec">E. 提供エンドポイント（51オペレーション）</h2>
+    <table>
+      <tr><th>分類</th><th>エンドポイント</th></tr>
+      <tr><td>汎用</td><td><code>/v1/qr</code> <code>/v1/og-image</code> <code>/v1/convert</code> <code>/v1/hash</code> <code>/v1/encode</code> <code>/v1/slug</code> ほか</td></tr>
+      <tr><td>🇯🇵 日本語</td><td><code>/v1/jp/convert</code>（全角半角・かな・ローマ字）<code>/v1/jp/slug</code></td></tr>
+      <tr><td>バルク</td><td><code>/v1/qr/bulk</code> <code>/v1/hash/bulk</code></td></tr>
+      <tr><td>画像/コード</td><td><code>/v1/barcode</code> <code>/v1/qr/wifi</code> <code>/v1/qr/vcard</code></td></tr>
+      <tr><td>書類</td><td><code>/v1/invoice</code>（SVG）<code>/v1/markdown</code> <code>/v1/html/strip</code></td></tr>
+      <tr><td>🌍 国際化</td><td><code>/v1/translit</code> <code>/v1/slug/intl</code> <code>/v1/phone</code> <code>/v1/postal</code> <code>/v1/currency/convert</code></td></tr>
+      <tr><td>開発ツール</td><td><code>/v1/jwt/decode</code> <code>/v1/color/convert</code> <code>/v1/color/contrast</code> <code>/v1/units/convert</code> <code>/v1/time/convert</code> <code>/v1/geo/distance</code></td></tr>
+      <tr><td>検証</td><td><code>/v1/validate/email</code> <code>/v1/validate/creditcard</code> <code>/v1/validate/iban</code> <code>/v1/password/strength</code></td></tr>
+      <tr><td>テキスト/生成</td><td><code>/v1/text/case</code> <code>/v1/text/stats</code> <code>/v1/lorem</code> <code>/v1/uuid</code> <code>/v1/password</code> <code>/v1/token</code></td></tr>
+      <tr><td>運用</td><td><code>/health</code>（公開）<code>/v1/usage</code> <code>/docs</code>（Swagger UI）</td></tr>
+    </table>
+    <div class="note"><span class="ic">⛁</span><div>全エンドポイントは <code>/docs</code> の Swagger UI で対話的に試せます。OpenAPI定義はそのまま RapidAPI に取り込めます。</div></div>
+  </section>
+
+  <!-- SETUP -->
+  <section class="panel" id="setup">
+    <h2 class="sec">F. 初回セットアップ（約1時間・一回限り）</h2>
+
+    <div class="step"><div class="num">1</div><div class="body"><h4>リポジトリを取得</h4>
+      <p class="hint">受け取ったGitHubリポジトリをクローン</p>
+      <div class="term"><div class="bar"><span class="label">TERMINAL</span><button class="copy">コピー</button></div>
+<pre><span class="k">git</span> clone <span class="s">&lt;your-repo-url&gt;</span>
+<span class="k">cd</span> New-Service
+<span class="k">npm</span> install</pre></div>
+    </div></div>
+
+    <div class="step"><div class="num">2</div><div class="body"><h4>動作確認</h4>
+      <p class="hint">ローカルで立ち上げてドキュメントを確認</p>
+      <div class="term"><div class="bar"><span class="label">TERMINAL</span><button class="copy">コピー</button></div>
+<pre><span class="k">npm</span> run dev
+<span class="c"># ブラウザで http://localhost:3000/docs</span></pre></div>
+    </div></div>
+
+    <div class="step"><div class="num">3</div><div class="body"><h4>Render でデプロイ</h4>
+      <p class="hint">render.com で New → Blueprint → GitHub接続 → <code>render.yaml</code> を自動検出 → デプロイ。ダッシュボードで環境変数を設定。</p>
+    </div></div>
+
+    <div class="step"><div class="num">4</div><div class="body"><h4>RapidAPI に出品</h4>
+      <p class="hint">① Render の URL を Base URL に設定 ② Security で Proxy Secret を生成し、その値を Render の <code>RAPIDAPI_PROXY_SECRET</code> に登録 ③ OpenAPI を取り込み ④ 無料/Pro/Ultra の価格を設定</p>
+    </div></div>
+
+    <div class="step"><div class="num">5</div><div class="body"><h4>入金口座を接続</h4>
+      <p class="hint">RapidAPI に Stripe 等の受取口座を接続。</p>
+    </div></div>
+
+    <div class="step"><div class="num">6</div><div class="body"><h4>（任意）2枚目の出品</h4>
+      <p class="hint">同じ Base URL で英語版の出品を複製 → グローバル同時展開。</p>
+    </div></div>
+
+    <div class="note ok"><span class="ic">✓</span><div>ここまでが「一回限りの1時間」。以降は機能追加を私が push → 自動反映で回します。</div></div>
+  </section>
+
+  <div class="foot">Toolbelt API — System Design. Render + RapidAPI / Fastify (Node 20+) / 自己完結HTML。</div>
+</div>
+
+<script>
+  // tabs
+  const tabs=document.querySelectorAll('.tab');
+  const panels=document.querySelectorAll('.panel');
+  tabs.forEach(t=>t.addEventListener('click',()=>{
+    tabs.forEach(x=>x.classList.remove('active'));
+    panels.forEach(p=>p.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }));
+  // copy buttons
+  document.querySelectorAll('.term .copy').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const pre=btn.closest('.term').querySelector('pre');
+      const text=pre.innerText.replace(/^\s*#.*$/gm,l=>l); // keep as-is
+      navigator.clipboard.writeText(pre.innerText).then(()=>{
+        const o=btn.textContent;btn.textContent='✓ コピー済';
+        setTimeout(()=>btn.textContent=o,1400);
+      }).catch(()=>{});
+    });
+  });
+</script>
+</body>
+</html>
