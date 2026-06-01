@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Toolbelt API — developer utilities, pay as you go</title>
+    <meta
+      name="description"
+      content="One API for QR codes, social/OG images, JSON/YAML/CSV conversion, hashing, encoding and generators. Fast, cheap, no AI bills."
+    />
+    <style>
+      :root { color-scheme: dark; }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif;
+        background: radial-gradient(1200px 600px at 70% -10%, #1e293b, #0b1220 60%);
+        color: #e2e8f0;
+        line-height: 1.6;
+      }
+      .wrap { max-width: 880px; margin: 0 auto; padding: 64px 24px 96px; }
+      .badge {
+        display: inline-block; padding: 6px 14px; border-radius: 999px;
+        background: rgba(56,189,248,.15); color: #7dd3fc; font-weight: 700;
+        font-size: 13px; letter-spacing: .04em;
+      }
+      h1 { font-size: 44px; margin: 18px 0 8px; line-height: 1.1; }
+      h1 span { color: #38bdf8; }
+      p.lead { font-size: 19px; color: #94a3b8; max-width: 620px; }
+      .cta { margin: 28px 0 8px; display: flex; gap: 12px; flex-wrap: wrap; }
+      .btn {
+        text-decoration: none; padding: 12px 22px; border-radius: 12px; font-weight: 700;
+      }
+      .btn.primary { background: #38bdf8; color: #04222e; }
+      .btn.ghost { border: 1px solid #334155; color: #e2e8f0; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; margin-top: 44px; }
+      .card { background: rgba(148,163,184,.06); border: 1px solid #1e293b; border-radius: 16px; padding: 20px; }
+      .card h3 { margin: 0 0 6px; font-size: 18px; }
+      .card code { color: #7dd3fc; font-size: 13px; }
+      pre {
+        background: #0b1220; border: 1px solid #1e293b; border-radius: 12px;
+        padding: 18px; overflow-x: auto; font-size: 13px; color: #cbd5e1; margin-top: 36px;
+      }
+      footer { margin-top: 56px; color: #64748b; font-size: 14px; }
+      a { color: #7dd3fc; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <span class="badge">DEVELOPER API</span>
+      <h1>One <span>toolbelt</span> for the boring stuff.</h1>
+      <p class="lead">
+        QR codes, social/OG images, JSON↔YAML↔CSV conversion, hashing, encoding and
+        generators — behind a single fast API. No AI bills, predictable pricing,
+        live in minutes.
+      </p>
+      <div class="cta">
+        <a class="btn primary" href="/docs">Interactive docs →</a>
+        <a class="btn ghost" href="https://rapidapi.com/">Get an API key</a>
+      </div>
+
+      <div class="grid">
+        <div class="card"><h3>QR codes</h3><code>POST /v1/qr</code><p>PNG or SVG, themed, sized.</p></div>
+        <div class="card"><h3>OG images</h3><code>POST /v1/og-image</code><p>Social cards as SVG.</p></div>
+        <div class="card"><h3>Convert</h3><code>POST /v1/convert</code><p>JSON ↔ YAML ↔ CSV.</p></div>
+        <div class="card"><h3>Hash &amp; encode</h3><code>POST /v1/hash</code><p>SHA/MD5/HMAC, base64, hex.</p></div>
+        <div class="card"><h3>Generators</h3><code>GET /v1/uuid</code><p>UUIDs, passwords, tokens, slugs.</p></div>
+        <div class="card"><h3>Usage</h3><code>GET /v1/usage</code><p>Track your own calls.</p></div>
+      </div>
+
+      <pre>curl -X POST https://your-host/v1/qr \
+  -H "X-API-Key: your-key" \
+  -H "Content-Type: application/json" \
+  -d '{"text":"https://example.com","format":"png","size":512}' \
+  --output qr.png</pre>
+
+      <footer>Toolbelt API · <a href="/docs">/docs</a> · <a href="/health">/health</a></footer>
+    </div>
+  </body>
+</html>
