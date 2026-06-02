@@ -33,6 +33,7 @@
     "@fastify/static": "^7.0.4",
     "@fastify/swagger": "^8.15.0",
     "@fastify/swagger-ui": "^4.0.1",
+    "bcryptjs": "^2.4.3",
     "bwip-js": "^4.11.1",
     "fastify": "^4.28.1",
     "js-yaml": "^4.1.0",
@@ -42,6 +43,7 @@
     "sanitize-html": "^2.17.4"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^22.7.4",
     "@types/qrcode": "^1.5.5",

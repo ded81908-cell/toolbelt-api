@@ -51,6 +51,13 @@ gross margin is near 100%.
 | `POST /v1/text/similarity` | Levenshtein distance + similarity ratio |
 | `POST /v1/time/zones` | List IANA timezones (filterable) |
 | `POST /v1/creditcard/generate` | Luhn-valid **test** card numbers |
+| `POST /v1/json/format` | Validate, pretty-print or minify JSON |
+| `POST /v1/jwt/sign` | Sign an HS256/384/512 JWT |
+| `POST /v1/bcrypt/hash` · `/v1/bcrypt/verify` | bcrypt password hashing & verify |
+| `POST /v1/pii/redact` | Mask emails / cards / phones in text |
+| `POST /v1/uuid/v5` | Deterministic namespaced UUID |
+| `POST /v1/age` | Age / elapsed time from a date |
+| `POST /v1/markdown/toc` | Table of contents from Markdown |
 | `GET  /v1/usage` | The calling client's own usage counters |
 | `GET  /health` | Liveness (unauthenticated) |
 | `GET  /docs` | Interactive OpenAPI (Swagger UI) |
@@ -73,7 +80,7 @@ curl -X POST http://localhost:3000/v1/qr \
 
 ```bash
 npm run build      # tsc -> dist/
-npm test           # vitest, 71 tests
+npm test           # vitest, 79 tests
 npm run typecheck  # no-emit type check (also runs in CI)
 ```
 
@@ -145,7 +152,7 @@ src/
                   intl (translit/phone/postal), currency,
                   color, text, datetime, jwt, validate, units, geo,
                   qrextra (wifi/vcard), url, number, idgen, checksum,
-                  network (cidr), mime, gravatar
+                  network (cidr), mime, gravatar, json, bcrypt, pii
 public/index.html landing page
 test/api.test.ts  end-to-end tests
 ```

@@ -63,6 +63,40 @@ export async function datetimeRoutes(app: FastifyInstance): Promise<void> {
     },
   );
 
+  app.post<{ Body: { birthdate: string; at?: string } }>(
+    "/v1/age",
+    {
+      schema: {
+        summary: "Compute age / elapsed time from a date",
+        description: "Given a birthdate (ISO date), returns years, months and days elapsed (to `at`, default now).",
+        tags: ["datetime"],
+        body: {
+          type: "object",
+          required: ["birthdate"],
+          properties: {
+            birthdate: { type: "string", maxLength: 32 },
+            at: { type: "string", maxLength: 32 },
+          },
+        },
+      },
+    },
+    async (req, reply) => {
+      const from = new Date(req.body.birthdate);
+      const to = req.body.at ? new Date(req.body.at) : new Date();
+      if (Number.isNaN(from.getTime()) || Number.isNaN(to.getTime())) {
+        return reply.code(422).send({ error: "invalid_date", message: "Use an ISO date like 1990-05-20." });
+      }
+      if (to < from) return reply.code(422).send({ error: "invalid_range", message: "birthdate is after the target date." });
+      let years = to.getUTCFullYear() - from.getUTCFullYear();
+      let months = to.getUTCMonth() - from.getUTCMonth();
+      let days = to.getUTCDate() - from.getUTCDate();
+      if (days < 0) { months--; days += new Date(Date.UTC(to.getUTCFullYear(), to.getUTCMonth(), 0)).getUTCDate(); }
+      if (months < 0) { years--; months += 12; }
+      const totalDays = Math.floor((to.getTime() - from.getTime()) / 86400000);
+      return { years, months, days, totalDays };
+    },
+  );
+
   app.post<{ Body: { filter?: string } }>(
     "/v1/time/zones",
     {

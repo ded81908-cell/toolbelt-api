@@ -548,6 +548,86 @@ describe("creditcard generate", () => {
   });
 });
 
+describe("json format", () => {
+  it("pretty-prints and minifies", async () => {
+    const res = await auth({ json: '{"b":1,"a":2}', indent: 2, sortKeys: true }, "/v1/json/format");
+    const b = res.json();
+    expect(b.valid).toBe(true);
+    expect(b.minified).toBe('{"a":2,"b":1}');
+    expect(b.formatted).toContain('\n  "a": 2');
+  });
+  it("returns 422 for invalid json", async () => {
+    const res = await auth({ json: "{nope}" }, "/v1/json/format");
+    expect(res.statusCode).toBe(422);
+  });
+});
+
+describe("jwt sign", () => {
+  it("signs a token that round-trips through decode", async () => {
+    const signed = await auth({ payload: { sub: "u1" }, secret: "s3cr3t", expiresIn: 3600 }, "/v1/jwt/sign");
+    const token = signed.json().token;
+    expect(token.split(".")).toHaveLength(3);
+    const decoded = await auth({ token, secret: "s3cr3t" }, "/v1/jwt/decode");
+    const b = decoded.json();
+    expect(b.payload.sub).toBe("u1");
+    expect(b.signatureValid).toBe(true);
+    expect(b.expired).toBe(false);
+  });
+});
+
+describe("bcrypt", () => {
+  it("hashes and verifies a password", async () => {
+    const hashed = await auth({ password: "hunter2", rounds: 4 }, "/v1/bcrypt/hash");
+    const hash = hashed.json().hash;
+    expect(hash).toMatch(/^\$2[aby]\$/);
+    const ok = await auth({ password: "hunter2", hash }, "/v1/bcrypt/verify");
+    expect(ok.json().match).toBe(true);
+    const bad = await auth({ password: "wrong", hash }, "/v1/bcrypt/verify");
+    expect(bad.json().match).toBe(false);
+  });
+});
+
+describe("pii redact", () => {
+  it("masks emails and card numbers", async () => {
+    const res = await auth(
+      { text: "Contact john.doe@example.com card 4111 1111 1111 1111" },
+      "/v1/pii/redact",
+    );
+    const b = res.json();
+    expect(b.counts.emails).toBe(1);
+    expect(b.counts.cards).toBe(1);
+    expect(b.redacted).not.toContain("john.doe@example.com");
+    expect(b.redacted).toContain("1111");
+  });
+});
+
+describe("uuid v5", () => {
+  it("is deterministic and matches the known DNS vector", async () => {
+    // uuidv5('example.com', DNS) is a well-known RFC test vector
+    const res = await auth({ namespace: "dns", name: "example.com" }, "/v1/uuid/v5");
+    expect(res.json().uuid).toBe("cfbff0d1-9375-5685-968c-48ce8b15ae17");
+    const again = await auth({ namespace: "dns", name: "example.com" }, "/v1/uuid/v5");
+    expect(again.json().uuid).toBe(res.json().uuid);
+  });
+});
+
+describe("age", () => {
+  it("computes whole years", async () => {
+    const res = await auth({ birthdate: "2000-01-01", at: "2026-06-02" }, "/v1/age");
+    expect(res.json().years).toBe(26);
+  });
+});
+
+describe("markdown toc", () => {
+  it("builds a TOC from headings", async () => {
+    const res = await auth({ markdown: "# Title\n## Section A\n## Section B" }, "/v1/markdown/toc");
+    const b = res.json();
+    expect(b.count).toBe(3);
+    expect(b.toc).toContain("- [Title](#title)");
+    expect(b.toc).toContain("  - [Section A](#section-a)");
+  });
+});
+
 describe("usage", () => {
   it("reports counters for the caller", async () => {
     await auth({ input: "x" }, "/v1/hash");
