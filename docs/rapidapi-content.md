@@ -193,3 +193,56 @@ curl -X POST "https://{HOST}/v1/phone" \
 
 > `{HOST}` は各出品の `X-RapidAPI-Host`（Hubのコードスニペットに表示）に置き換えてください。
 > JP出品にはJP版、グローバル出品にはEN版を使うと刺さります。
+
+---
+
+# 5. Spotlights（Overview のハイライト枠）
+
+> Overview タブの **「Add Spotlight」** で1枚ずつ追加。各スポットライトは「タイトル＋説明（＋画像）」です。
+> 画像は先に渡した `docs/samples/`（qr.png / barcode-ean13.png / invoice.svg / og-image.svg）やロゴが使えます。
+
+### Spotlight 1 — 価値訴求
+- **Title (JP)**: 59のツールを1つのAPIに、AIコストはゼロ
+- **Title (EN)**: 59 tools in one API — zero AI cost
+- **Description (JP)**: QR・バーコード・請求書・Markdown・ハッシュ・検証・国際化・日本語処理まで。決定的・高速・低コスト。まずは無料プランで。
+- **Description (EN)**: QR & barcodes, invoices, Markdown, hashing, validators, i18n and a Japanese pack — deterministic, fast, cheap. Start free.
+- **画像**: `og-image.svg` または ロゴ
+
+### Spotlight 2 — 日本語特化（差別化）
+- **Title (JP)**: 🇯🇵 日本のアプリ開発に効く
+- **Title (EN)**: 🇯🇵 Built for Japanese apps
+- **Description (JP)**: 全角⇄半角、ひら⇄カタ、かな→ローマ字、ローマ字スラッグ。他APIにない地味に必須の処理。
+- **Description (EN)**: Full-width⇄half-width, kana conversion, romaji and romaji slugs — niche utilities you won't find elsewhere.
+
+### Spotlight 3 — 画像/コード
+- **Title (JP)**: QR・バーコード・書類をワンコールで
+- **Title (EN)**: QR, barcodes & documents in one call
+- **Description (JP)**: QR（Wi-Fi/vCard対応）、Code128/EAN/UPC/PDF417、SVG請求書、Markdown→HTML。
+- **Description (EN)**: QR (incl. Wi-Fi/vCard), Code128/EAN/UPC/PDF417, SVG invoices and Markdown→HTML.
+- **画像**: `barcode-ean13.png` または `qr.png`
+
+### Spotlight 4 — 検証スイート
+- **Title (JP)**: あらゆる入力を検証
+- **Title (EN)**: Validate everything
+- **Description (JP)**: メール・クレジットカード(Luhn)・IBAN・電話(E.164)・郵便番号・パスワード強度。
+- **Description (EN)**: Email, credit card (Luhn), IBAN, phone (E.164), postal codes and password strength.
+
+---
+
+# 6. Discussions（最初の投稿・任意）
+
+> **New Discussion** で1本「ウェルカム投稿」を立てておくと、活気が出てSEO/信頼感に効きます。
+
+```markdown
+**Title:** Welcome 👋 — Getting started & feature requests
+
+Thanks for checking out Toolbelt API! 59 deterministic, zero-AI-cost utilities
+behind one base URL.
+
+- New here? Subscribe to the free **BASIC** plan and try `GET /v1/uuid` or `POST /v1/qr`.
+- Full interactive docs are in the **Endpoints** tab.
+- Missing a utility you need? Reply here — we ship requested endpoints quickly.
+
+Happy building!
+```
+
