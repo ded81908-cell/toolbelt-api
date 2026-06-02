@@ -3,6 +3,9 @@
 RapidAPI の Hub Listing にある **About** / **Tutorials** タブへ、そのまま貼り付けて使えるコンテンツ集です（Markdown対応）。
 JP（日本向け出品）と EN（グローバル出品）の両方を用意しています。コード例の `{HOST}`（例: `toolbelt-api.p.rapidapi.com`）と `YOUR_KEY` は各自の値に置き換えてください。
 
+> **グローバル英語出品はこちら → [`docs/rapidapi-content-en.md`](./rapidapi-content-en.md)**（英語のみ・コピペ用に整理済み）。
+> このファイル（JP）と同じ構成で、Name / Description / Tutorials×4 / Spotlights×4 / Discussions をまとめています。
+
 ---
 
 # 1. Getting Started / はじめに

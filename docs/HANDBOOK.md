@@ -106,7 +106,8 @@
 | `docs/SETUP.md` | 初回セットアップ手順 |
 | `docs/examples.md` | **全80EPの実リクエスト/レスポンス例** |
 | `docs/rapidapi-listing.md` | 価格・出品文面（JP/EN） |
-| `docs/rapidapi-content.md` | Spotlight / Tutorials / Discussions |
+| `docs/rapidapi-content.md` | Spotlight / Tutorials / Discussions（JP） |
+| `docs/rapidapi-content-en.md` | 同上のグローバル英語出品版（EN） |
 | `docs/seo.md` | SEO最適化コピー |
 | `docs/code-examples.md` | curl/JS/Python 例 |
 | `docs/HANDBOOK.md` | ← この総合ガイド |
