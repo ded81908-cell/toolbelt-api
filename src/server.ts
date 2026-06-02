@@ -39,6 +39,10 @@ import { gravatarRoutes } from "./routes/gravatar.js";
 import { jsonRoutes } from "./routes/json.js";
 import { bcryptRoutes } from "./routes/bcrypt.js";
 import { piiRoutes } from "./routes/pii.js";
+import { regexRoutes } from "./routes/regex.js";
+import { userAgentRoutes } from "./routes/useragent.js";
+import { cipherRoutes } from "./routes/cipher.js";
+import { encodingRoutes } from "./routes/encoding.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -139,6 +143,10 @@ export async function buildServer(config: Config = loadConfig()): Promise<Fastif
   await app.register(jsonRoutes);
   await app.register(bcryptRoutes);
   await app.register(piiRoutes);
+  await app.register(regexRoutes);
+  await app.register(userAgentRoutes);
+  await app.register(cipherRoutes);
+  await app.register(encodingRoutes);
 
   return app;
 }

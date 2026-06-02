@@ -17,7 +17,40 @@ function intToIp(n: number): string {
   return [(n >>> 24) & 255, (n >>> 16) & 255, (n >>> 8) & 255, n & 255].join(".");
 }
 
+function classifyIpv4(ip: string): string {
+  const o = ip.split(".").map(Number);
+  if (o[0] === 10 || (o[0] === 172 && o[1] >= 16 && o[1] <= 31) || (o[0] === 192 && o[1] === 168)) return "private";
+  if (o[0] === 127) return "loopback";
+  if (o[0] === 169 && o[1] === 254) return "link-local";
+  if (o[0] >= 224 && o[0] <= 239) return "multicast";
+  return "public";
+}
+
 export async function networkRoutes(app: FastifyInstance): Promise<void> {
+  app.post<{ Body: { ip: string } }>(
+    "/v1/ip/info",
+    {
+      schema: {
+        summary: "Validate and classify an IP address (v4/v6)",
+        tags: ["network"],
+        body: { type: "object", required: ["ip"], properties: { ip: { type: "string", maxLength: 64 } } },
+      },
+    },
+    async (req) => {
+      const ip = req.body.ip.trim();
+      const v4 = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(ip);
+      if (v4 && v4.slice(1).every((p) => Number(p) <= 255)) {
+        return { valid: true, version: 4, type: classifyIpv4(ip) };
+      }
+      const v6 = /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|::([0-9a-fA-F]{1,4}:){0,6}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4})$/;
+      if (v6.test(ip) || ip === "::1" || ip === "::") {
+        const type = ip === "::1" ? "loopback" : ip.toLowerCase().startsWith("fe80") ? "link-local" : ip.toLowerCase().startsWith("fc") || ip.toLowerCase().startsWith("fd") ? "private" : "public";
+        return { valid: true, version: 6, type };
+      }
+      return { valid: false, version: null, type: null };
+    },
+  );
+
   app.post<{ Body: { cidr: string } }>(
     "/v1/cidr",
     {

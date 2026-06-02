@@ -7,6 +7,70 @@ interface TimeBody {
 }
 
 export async function datetimeRoutes(app: FastifyInstance): Promise<void> {
+  app.post<{ Body: { date?: string; years?: number; months?: number; days?: number; hours?: number; minutes?: number; seconds?: number } }>(
+    "/v1/date/add",
+    {
+      schema: {
+        summary: "Add or subtract a duration from a date",
+        description: "Adds the given fields (use negatives to subtract) to `date` (default now). Returns the resulting ISO timestamp.",
+        tags: ["datetime"],
+        body: {
+          type: "object",
+          properties: {
+            date: { type: "string", maxLength: 40 },
+            years: { type: "integer", minimum: -100000, maximum: 100000, default: 0 },
+            months: { type: "integer", minimum: -1200000, maximum: 1200000, default: 0 },
+            days: { type: "integer", minimum: -3650000, maximum: 3650000, default: 0 },
+            hours: { type: "integer", default: 0 },
+            minutes: { type: "integer", default: 0 },
+            seconds: { type: "integer", default: 0 },
+          },
+        },
+      },
+    },
+    async (req, reply) => {
+      const { date, years = 0, months = 0, days = 0, hours = 0, minutes = 0, seconds = 0 } = req.body;
+      const d = date ? new Date(date) : new Date();
+      if (Number.isNaN(d.getTime())) return reply.code(422).send({ error: "invalid_date", message: "Could not parse `date`." });
+      d.setUTCFullYear(d.getUTCFullYear() + years);
+      d.setUTCMonth(d.getUTCMonth() + months);
+      d.setUTCDate(d.getUTCDate() + days);
+      d.setUTCHours(d.getUTCHours() + hours, d.getUTCMinutes() + minutes, d.getUTCSeconds() + seconds);
+      return { iso: d.toISOString(), unix: Math.floor(d.getTime() / 1000) };
+    },
+  );
+
+  app.post<{ Body: { from: string; to: string } }>(
+    "/v1/date/business-days",
+    {
+      schema: {
+        summary: "Count business days (Mon–Fri) between two dates",
+        tags: ["datetime"],
+        body: {
+          type: "object",
+          required: ["from", "to"],
+          properties: { from: { type: "string", maxLength: 40 }, to: { type: "string", maxLength: 40 } },
+        },
+      },
+    },
+    async (req, reply) => {
+      const from = new Date(req.body.from);
+      const to = new Date(req.body.to);
+      if (Number.isNaN(from.getTime()) || Number.isNaN(to.getTime())) return reply.code(422).send({ error: "invalid_date", message: "Use ISO dates." });
+      const totalDays = Math.round((Date.UTC(to.getUTCFullYear(), to.getUTCMonth(), to.getUTCDate()) - Date.UTC(from.getUTCFullYear(), from.getUTCMonth(), from.getUTCDate())) / 86400000);
+      if (Math.abs(totalDays) > 366 * 200) return reply.code(422).send({ error: "range_too_large", message: "Range exceeds 200 years." });
+      const step = totalDays >= 0 ? 1 : -1;
+      let business = 0;
+      const cur = new Date(Date.UTC(from.getUTCFullYear(), from.getUTCMonth(), from.getUTCDate()));
+      for (let i = 0; i !== totalDays; i += step) {
+        const dow = cur.getUTCDay();
+        if (dow !== 0 && dow !== 6) business++;
+        cur.setUTCDate(cur.getUTCDate() + step);
+      }
+      return { from: req.body.from, to: req.body.to, calendarDays: Math.abs(totalDays), businessDays: business };
+    },
+  );
+
   app.post<{ Body: TimeBody }>(
     "/v1/time/convert",
     {

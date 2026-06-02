@@ -63,6 +63,74 @@ const WORDS = (
 ).split(" ");
 
 export async function idGenRoutes(app: FastifyInstance): Promise<void> {
+  app.post<{ Body: { uuid: string } }>(
+    "/v1/uuid/validate",
+    {
+      schema: {
+        summary: "Validate a UUID and detect its version",
+        tags: ["generators", "validation"],
+        body: { type: "object", required: ["uuid"], properties: { uuid: { type: "string", maxLength: 64 } } },
+      },
+    },
+    async (req) => {
+      const m = /^([0-9a-f]{8})-([0-9a-f]{4})-([1-8])([0-9a-f]{3})-([89ab])([0-9a-f]{3})-([0-9a-f]{12})$/i.exec(req.body.uuid.trim());
+      if (!m) return { valid: false, version: null, variant: null };
+      return { valid: true, version: Number(m[3]), variant: "RFC 4122" };
+    },
+  );
+
+  app.post<{ Body: { min?: number; max?: number; count?: number } }>(
+    "/v1/random/number",
+    {
+      schema: {
+        summary: "Cryptographically strong random integers",
+        tags: ["generators"],
+        body: {
+          type: "object",
+          properties: {
+            min: { type: "integer", default: 0 },
+            max: { type: "integer", default: 100 },
+            count: { type: "integer", minimum: 1, maximum: 1000, default: 1 },
+          },
+        },
+      },
+    },
+    async (req, reply) => {
+      const min = req.body.min ?? 0;
+      const max = req.body.max ?? 100;
+      const count = req.body.count ?? 1;
+      if (min > max) return reply.code(422).send({ error: "bad_range", message: "min must be <= max." });
+      const numbers = Array.from({ length: count }, () => min + randomInt(max - min + 1));
+      return { min, max, numbers };
+    },
+  );
+
+  app.post<{ Body: { items: unknown[]; count?: number } }>(
+    "/v1/random/pick",
+    {
+      schema: {
+        summary: "Randomly pick items from a list",
+        tags: ["generators"],
+        body: {
+          type: "object",
+          required: ["items"],
+          properties: {
+            items: { type: "array", minItems: 1, maxItems: 10000, items: {} },
+            count: { type: "integer", minimum: 1, maximum: 1000, default: 1 },
+          },
+        },
+      },
+    },
+    async (req) => {
+      const { items } = req.body;
+      const count = Math.min(req.body.count ?? 1, items.length);
+      const pool = [...items];
+      const picked: unknown[] = [];
+      for (let i = 0; i < count; i++) picked.push(pool.splice(randomInt(pool.length), 1)[0]);
+      return { picked };
+    },
+  );
+
   app.post<{ Body: { namespace: string; name: string } }>(
     "/v1/uuid/v5",
     {

@@ -628,6 +628,101 @@ describe("markdown toc", () => {
   });
 });
 
+describe("regex", () => {
+  it("finds global matches with groups", async () => {
+    const res = await auth({ pattern: "(\\w)(\\d)", text: "a1 b2", flags: "g" }, "/v1/regex/test");
+    const b = res.json();
+    expect(b.count).toBe(2);
+    expect(b.matches[0].groups).toEqual(["a", "1"]);
+  });
+  it("returns 422 for an invalid pattern", async () => {
+    const res = await auth({ pattern: "(", text: "x" }, "/v1/regex/test");
+    expect(res.statusCode).toBe(422);
+  });
+});
+
+describe("useragent", () => {
+  it("parses an iPhone Safari UA", async () => {
+    const res = await auth(
+      { userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605 Version/17.0 Mobile Safari/604" },
+      "/v1/useragent/parse",
+    );
+    const b = res.json();
+    expect(b.os.name).toBe("iOS");
+    expect(b.device.vendor).toBe("Apple");
+  });
+});
+
+describe("cipher", () => {
+  it("encodes Morse", async () => {
+    const res = await auth({ text: "SOS" }, "/v1/morse");
+    expect(res.json().result).toBe("... --- ...");
+  });
+  it("round-trips ROT13", async () => {
+    const enc = (await auth({ text: "Hello, World" }, "/v1/cipher/caesar")).json().result;
+    const dec = (await auth({ text: enc, action: "decode" }, "/v1/cipher/caesar")).json().result;
+    expect(dec).toBe("Hello, World");
+  });
+});
+
+describe("base32", () => {
+  it("round-trips", async () => {
+    const enc = (await auth({ input: "hello" }, "/v1/encode/base32")).json().result;
+    expect(enc).toBe("NBSWY3DP");
+    const dec = (await auth({ input: enc, action: "decode" }, "/v1/encode/base32")).json().result;
+    expect(dec).toBe("hello");
+  });
+});
+
+describe("ip info", () => {
+  it("classifies a private IPv4", async () => {
+    const res = await auth({ ip: "10.1.2.3" }, "/v1/ip/info");
+    expect(res.json()).toEqual({ valid: true, version: 4, type: "private" });
+  });
+  it("recognises IPv6 loopback", async () => {
+    const res = await auth({ ip: "::1" }, "/v1/ip/info");
+    expect(res.json().version).toBe(6);
+  });
+});
+
+describe("json diff & get", () => {
+  it("diffs two objects", async () => {
+    const res = await auth({ a: { x: 1, y: 2 }, b: { x: 1, y: 3, z: 4 } }, "/v1/json/diff");
+    const b = res.json();
+    expect(b.added).toEqual({ z: 4 });
+    expect(b.changed).toEqual({ y: { from: 2, to: 3 } });
+  });
+  it("gets a nested value by path", async () => {
+    const res = await auth({ data: { user: { tags: ["a", "b"] } }, path: "user.tags[1]" }, "/v1/json/get");
+    expect(res.json().value).toBe("b");
+  });
+});
+
+describe("date add & business days", () => {
+  it("adds months and days", async () => {
+    const res = await auth({ date: "2026-01-01", months: 2, days: 10 }, "/v1/date/add");
+    expect(res.json().iso).toBe("2026-03-11T00:00:00.000Z");
+  });
+  it("counts business days in a week", async () => {
+    const res = await auth({ from: "2026-06-01", to: "2026-06-08" }, "/v1/date/business-days");
+    expect(res.json().businessDays).toBe(5);
+  });
+});
+
+describe("uuid validate & random", () => {
+  it("validates a v5 UUID", async () => {
+    const res = await auth({ uuid: "cfbff0d1-9375-5685-968c-48ce8b15ae17" }, "/v1/uuid/validate");
+    expect(res.json()).toEqual({ valid: true, version: 5, variant: "RFC 4122" });
+  });
+  it("generates random integers in range", async () => {
+    const res = await auth({ min: 1, max: 6, count: 50 }, "/v1/random/number");
+    const nums = res.json().numbers;
+    expect(nums).toHaveLength(50);
+    expect(Math.min(...nums)).toBeGreaterThanOrEqual(1);
+    expect(Math.max(...nums)).toBeLessThanOrEqual(6);
+  });
+});
+
 describe("usage", () => {
   it("reports counters for the caller", async () => {
     await auth({ input: "x" }, "/v1/hash");

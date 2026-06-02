@@ -58,6 +58,16 @@ gross margin is near 100%.
 | `POST /v1/uuid/v5` | Deterministic namespaced UUID |
 | `POST /v1/age` | Age / elapsed time from a date |
 | `POST /v1/markdown/toc` | Table of contents from Markdown |
+| `POST /v1/regex/test` | Test a regex, return matches & groups |
+| `POST /v1/useragent/parse` | Parse a User-Agent (browser/os/device) |
+| `POST /v1/morse` | Morse code encode / decode |
+| `POST /v1/cipher/caesar` | Caesar / ROT cipher |
+| `POST /v1/encode/base32` | Base32 encode / decode (RFC 4648) |
+| `POST /v1/ip/info` | Validate & classify an IP (v4/v6) |
+| `POST /v1/json/diff` · `/v1/json/get` | Diff JSON / extract by path |
+| `POST /v1/date/add` · `/v1/date/business-days` | Date math & business-day count |
+| `POST /v1/uuid/validate` | Validate a UUID & detect version |
+| `POST /v1/random/number` · `/v1/random/pick` | Secure random numbers / picks |
 | `GET  /v1/usage` | The calling client's own usage counters |
 | `GET  /health` | Liveness (unauthenticated) |
 | `GET  /docs` | Interactive OpenAPI (Swagger UI) |
@@ -80,7 +90,7 @@ curl -X POST http://localhost:3000/v1/qr \
 
 ```bash
 npm run build      # tsc -> dist/
-npm test           # vitest, 79 tests
+npm test           # vitest, 93 tests
 npm run typecheck  # no-emit type check (also runs in CI)
 ```
 
@@ -152,7 +162,8 @@ src/
                   intl (translit/phone/postal), currency,
                   color, text, datetime, jwt, validate, units, geo,
                   qrextra (wifi/vcard), url, number, idgen, checksum,
-                  network (cidr), mime, gravatar, json, bcrypt, pii
+                  network (cidr/ip), mime, gravatar, json, bcrypt, pii,
+                  regex, useragent, cipher, encoding
 public/index.html landing page
 test/api.test.ts  end-to-end tests
 ```
