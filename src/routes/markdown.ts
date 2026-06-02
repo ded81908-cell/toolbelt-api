@@ -34,6 +34,35 @@ function escapeHtml(s: string): string {
 }
 
 export async function markdownRoutes(app: FastifyInstance): Promise<void> {
+  app.post<{ Body: { markdown: string } }>(
+    "/v1/markdown/toc",
+    {
+      schema: {
+        summary: "Build a table of contents from Markdown headings",
+        description: "Extracts ATX headings (#, ##, …) and returns a structured list plus a ready-to-paste Markdown TOC with anchor links.",
+        tags: ["documents"],
+        body: { type: "object", required: ["markdown"], properties: { markdown: { type: "string", maxLength: 500_000 } } },
+      },
+    },
+    async (req) => {
+      const slugify = (s: string): string =>
+        s.toLowerCase().trim().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").replace(/-+/g, "-");
+      const headings: { level: number; text: string; slug: string }[] = [];
+      let inFence = false;
+      for (const raw of req.body.markdown.split("\n")) {
+        if (/^\s*```/.test(raw)) { inFence = !inFence; continue; }
+        if (inFence) continue;
+        const m = /^(#{1,6})\s+(.+?)\s*#*\s*$/.exec(raw);
+        if (m) headings.push({ level: m[1].length, text: m[2].trim(), slug: slugify(m[2]) });
+      }
+      const minLevel = headings.reduce((min, h) => Math.min(min, h.level), 6);
+      const toc = headings
+        .map((h) => `${"  ".repeat(h.level - minLevel)}- [${h.text}](#${h.slug})`)
+        .join("\n");
+      return { count: headings.length, headings, toc };
+    },
+  );
+
   app.post<{ Body: MarkdownBody }>(
     "/v1/markdown",
     {

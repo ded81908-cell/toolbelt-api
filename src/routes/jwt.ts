@@ -13,6 +13,38 @@ function decodeSegment(seg: string): unknown {
 }
 
 export async function jwtRoutes(app: FastifyInstance): Promise<void> {
+  app.post<{ Body: { payload: Record<string, unknown>; secret: string; algorithm?: "HS256" | "HS384" | "HS512"; expiresIn?: number } }>(
+    "/v1/jwt/sign",
+    {
+      schema: {
+        summary: "Sign a JWT (HS256/384/512)",
+        description: "Creates an HMAC-signed JWT from your payload and secret. Set expiresIn (seconds) to add iat/exp claims.",
+        tags: ["crypto"],
+        body: {
+          type: "object",
+          required: ["payload", "secret"],
+          properties: {
+            payload: { type: "object", additionalProperties: true },
+            secret: { type: "string", maxLength: 1024 },
+            algorithm: { type: "string", enum: ["HS256", "HS384", "HS512"], default: "HS256" },
+            expiresIn: { type: "integer", minimum: 1, maximum: 315360000 },
+          },
+        },
+      },
+    },
+    async (req) => {
+      const { payload, secret, algorithm = "HS256", expiresIn } = req.body;
+      const alg = HMAC_ALG[algorithm];
+      const header = { alg: algorithm, typ: "JWT" };
+      const now = Math.floor(Date.now() / 1000);
+      const claims = expiresIn ? { iat: now, exp: now + expiresIn, ...payload } : payload;
+      const enc = (o: unknown): string => Buffer.from(JSON.stringify(o)).toString("base64url");
+      const signingInput = `${enc(header)}.${enc(claims)}`;
+      const signature = createHmac(alg, secret).update(signingInput).digest("base64url");
+      return { token: `${signingInput}.${signature}` };
+    },
+  );
+
   app.post<{ Body: JwtBody }>(
     "/v1/jwt/decode",
     {

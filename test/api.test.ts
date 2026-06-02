@@ -548,6 +548,181 @@ describe("creditcard generate", () => {
   });
 });
 
+describe("json format", () => {
+  it("pretty-prints and minifies", async () => {
+    const res = await auth({ json: '{"b":1,"a":2}', indent: 2, sortKeys: true }, "/v1/json/format");
+    const b = res.json();
+    expect(b.valid).toBe(true);
+    expect(b.minified).toBe('{"a":2,"b":1}');
+    expect(b.formatted).toContain('\n  "a": 2');
+  });
+  it("returns 422 for invalid json", async () => {
+    const res = await auth({ json: "{nope}" }, "/v1/json/format");
+    expect(res.statusCode).toBe(422);
+  });
+});
+
+describe("jwt sign", () => {
+  it("signs a token that round-trips through decode", async () => {
+    const signed = await auth({ payload: { sub: "u1" }, secret: "s3cr3t", expiresIn: 3600 }, "/v1/jwt/sign");
+    const token = signed.json().token;
+    expect(token.split(".")).toHaveLength(3);
+    const decoded = await auth({ token, secret: "s3cr3t" }, "/v1/jwt/decode");
+    const b = decoded.json();
+    expect(b.payload.sub).toBe("u1");
+    expect(b.signatureValid).toBe(true);
+    expect(b.expired).toBe(false);
+  });
+});
+
+describe("bcrypt", () => {
+  it("hashes and verifies a password", async () => {
+    const hashed = await auth({ password: "hunter2", rounds: 4 }, "/v1/bcrypt/hash");
+    const hash = hashed.json().hash;
+    expect(hash).toMatch(/^\$2[aby]\$/);
+    const ok = await auth({ password: "hunter2", hash }, "/v1/bcrypt/verify");
+    expect(ok.json().match).toBe(true);
+    const bad = await auth({ password: "wrong", hash }, "/v1/bcrypt/verify");
+    expect(bad.json().match).toBe(false);
+  });
+});
+
+describe("pii redact", () => {
+  it("masks emails and card numbers", async () => {
+    const res = await auth(
+      { text: "Contact john.doe@example.com card 4111 1111 1111 1111" },
+      "/v1/pii/redact",
+    );
+    const b = res.json();
+    expect(b.counts.emails).toBe(1);
+    expect(b.counts.cards).toBe(1);
+    expect(b.redacted).not.toContain("john.doe@example.com");
+    expect(b.redacted).toContain("1111");
+  });
+});
+
+describe("uuid v5", () => {
+  it("is deterministic and matches the known DNS vector", async () => {
+    // uuidv5('example.com', DNS) is a well-known RFC test vector
+    const res = await auth({ namespace: "dns", name: "example.com" }, "/v1/uuid/v5");
+    expect(res.json().uuid).toBe("cfbff0d1-9375-5685-968c-48ce8b15ae17");
+    const again = await auth({ namespace: "dns", name: "example.com" }, "/v1/uuid/v5");
+    expect(again.json().uuid).toBe(res.json().uuid);
+  });
+});
+
+describe("age", () => {
+  it("computes whole years", async () => {
+    const res = await auth({ birthdate: "2000-01-01", at: "2026-06-02" }, "/v1/age");
+    expect(res.json().years).toBe(26);
+  });
+});
+
+describe("markdown toc", () => {
+  it("builds a TOC from headings", async () => {
+    const res = await auth({ markdown: "# Title\n## Section A\n## Section B" }, "/v1/markdown/toc");
+    const b = res.json();
+    expect(b.count).toBe(3);
+    expect(b.toc).toContain("- [Title](#title)");
+    expect(b.toc).toContain("  - [Section A](#section-a)");
+  });
+});
+
+describe("regex", () => {
+  it("finds global matches with groups", async () => {
+    const res = await auth({ pattern: "(\\w)(\\d)", text: "a1 b2", flags: "g" }, "/v1/regex/test");
+    const b = res.json();
+    expect(b.count).toBe(2);
+    expect(b.matches[0].groups).toEqual(["a", "1"]);
+  });
+  it("returns 422 for an invalid pattern", async () => {
+    const res = await auth({ pattern: "(", text: "x" }, "/v1/regex/test");
+    expect(res.statusCode).toBe(422);
+  });
+});
+
+describe("useragent", () => {
+  it("parses an iPhone Safari UA", async () => {
+    const res = await auth(
+      { userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605 Version/17.0 Mobile Safari/604" },
+      "/v1/useragent/parse",
+    );
+    const b = res.json();
+    expect(b.os.name).toBe("iOS");
+    expect(b.device.vendor).toBe("Apple");
+  });
+});
+
+describe("cipher", () => {
+  it("encodes Morse", async () => {
+    const res = await auth({ text: "SOS" }, "/v1/morse");
+    expect(res.json().result).toBe("... --- ...");
+  });
+  it("round-trips ROT13", async () => {
+    const enc = (await auth({ text: "Hello, World" }, "/v1/cipher/caesar")).json().result;
+    const dec = (await auth({ text: enc, action: "decode" }, "/v1/cipher/caesar")).json().result;
+    expect(dec).toBe("Hello, World");
+  });
+});
+
+describe("base32", () => {
+  it("round-trips", async () => {
+    const enc = (await auth({ input: "hello" }, "/v1/encode/base32")).json().result;
+    expect(enc).toBe("NBSWY3DP");
+    const dec = (await auth({ input: enc, action: "decode" }, "/v1/encode/base32")).json().result;
+    expect(dec).toBe("hello");
+  });
+});
+
+describe("ip info", () => {
+  it("classifies a private IPv4", async () => {
+    const res = await auth({ ip: "10.1.2.3" }, "/v1/ip/info");
+    expect(res.json()).toEqual({ valid: true, version: 4, type: "private" });
+  });
+  it("recognises IPv6 loopback", async () => {
+    const res = await auth({ ip: "::1" }, "/v1/ip/info");
+    expect(res.json().version).toBe(6);
+  });
+});
+
+describe("json diff & get", () => {
+  it("diffs two objects", async () => {
+    const res = await auth({ a: { x: 1, y: 2 }, b: { x: 1, y: 3, z: 4 } }, "/v1/json/diff");
+    const b = res.json();
+    expect(b.added).toEqual({ z: 4 });
+    expect(b.changed).toEqual({ y: { from: 2, to: 3 } });
+  });
+  it("gets a nested value by path", async () => {
+    const res = await auth({ data: { user: { tags: ["a", "b"] } }, path: "user.tags[1]" }, "/v1/json/get");
+    expect(res.json().value).toBe("b");
+  });
+});
+
+describe("date add & business days", () => {
+  it("adds months and days", async () => {
+    const res = await auth({ date: "2026-01-01", months: 2, days: 10 }, "/v1/date/add");
+    expect(res.json().iso).toBe("2026-03-11T00:00:00.000Z");
+  });
+  it("counts business days in a week", async () => {
+    const res = await auth({ from: "2026-06-01", to: "2026-06-08" }, "/v1/date/business-days");
+    expect(res.json().businessDays).toBe(5);
+  });
+});
+
+describe("uuid validate & random", () => {
+  it("validates a v5 UUID", async () => {
+    const res = await auth({ uuid: "cfbff0d1-9375-5685-968c-48ce8b15ae17" }, "/v1/uuid/validate");
+    expect(res.json()).toEqual({ valid: true, version: 5, variant: "RFC 4122" });
+  });
+  it("generates random integers in range", async () => {
+    const res = await auth({ min: 1, max: 6, count: 50 }, "/v1/random/number");
+    const nums = res.json().numbers;
+    expect(nums).toHaveLength(50);
+    expect(Math.min(...nums)).toBeGreaterThanOrEqual(1);
+    expect(Math.max(...nums)).toBeLessThanOrEqual(6);
+  });
+});
+
 describe("usage", () => {
   it("reports counters for the caller", async () => {
     await auth({ input: "x" }, "/v1/hash");

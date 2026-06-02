@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="600" viewBox="0 0 1200 600" font-family="'DejaVu Sans','Segoe UI',system-ui,Helvetica,Arial,sans-serif">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#38bdf8"/><stop offset="0.55" stop-color="#4f76f6"/><stop offset="1" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="600" fill="url(#g)"/>
+  <ellipse cx="170" cy="80" rx="520" ry="320" fill="#ffffff" opacity="0.08"/>
+  <g transform="translate(720,70) scale(1.05)" fill="#ffffff" opacity="0.10"><path fill-rule="evenodd" d="M256 106 L385.9 181 L385.9 331 L256 406 L126.1 331 L126.1 181 Z M192 256 a64 64 0 1 0 128 0 a64 64 0 1 0 -128 0 Z"/></g>
+  <!-- small logo -->
+  <g transform="translate(80,56) scale(0.125)">
+    <rect x="16" y="16" width="480" height="480" rx="116" fill="#ffffff" opacity="0.18"/>
+    <path fill="#ffffff" fill-rule="evenodd" d="M256 106 L385.9 181 L385.9 331 L256 406 L126.1 331 L126.1 181 Z M192 256 a64 64 0 1 0 128 0 a64 64 0 1 0 -128 0 Z"/>
+  </g>
+  <text x="156" y="98" font-size="30" font-weight="800" fill="#ffffff" letter-spacing="0.5">toolbelt API</text>
+  <text x="80" y="318" font-size="76" font-weight="800" fill="#ffffff" letter-spacing="-1">Validate everything.</text>
+  <text x="82" y="382" font-size="32" font-weight="600" fill="#eaf2ff" opacity="0.92">Email · card (Luhn) · IBAN · phone · postal</text>
+  <text x="82" y="540" font-size="24" font-weight="700" fill="#ffffff" opacity="0.8">59 endpoints · zero AI cost · on RapidAPI</text>
+</svg>

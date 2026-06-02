@@ -1,5 +1,32 @@
-import { randomBytes, randomInt } from "node:crypto";
+import { createHash, randomBytes, randomInt } from "node:crypto";
 import type { FastifyInstance } from "fastify";
+
+const NAMESPACES: Record<string, string> = {
+  dns: "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+  url: "6ba7b811-9dad-11d1-80b4-00c04fd430c8",
+};
+
+function uuidToBytes(uuid: string): Buffer | null {
+  const hex = uuid.replace(/[-{}]/g, "");
+  if (!/^[0-9a-fA-F]{32}$/.test(hex)) return null;
+  return Buffer.from(hex, "hex");
+}
+
+function bytesToUuid(b: Buffer): string {
+  const h = b.toString("hex");
+  return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20, 32)}`;
+}
+
+function uuidV5(namespace: string, name: string): string | null {
+  const nsUuid = NAMESPACES[namespace.toLowerCase()] ?? namespace;
+  const nsBytes = uuidToBytes(nsUuid);
+  if (!nsBytes) return null;
+  const hash = createHash("sha1").update(Buffer.concat([nsBytes, Buffer.from(name, "utf8")])).digest();
+  const bytes = hash.subarray(0, 16);
+  bytes[6] = (bytes[6] & 0x0f) | 0x50; // version 5
+  bytes[8] = (bytes[8] & 0x3f) | 0x80; // variant
+  return bytesToUuid(bytes);
+}
 
 const NANO_ALPHABET = "useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict";
 const CROCKFORD = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
@@ -36,6 +63,98 @@ const WORDS = (
 ).split(" ");
 
 export async function idGenRoutes(app: FastifyInstance): Promise<void> {
+  app.post<{ Body: { uuid: string } }>(
+    "/v1/uuid/validate",
+    {
+      schema: {
+        summary: "Validate a UUID and detect its version",
+        tags: ["generators", "validation"],
+        body: { type: "object", required: ["uuid"], properties: { uuid: { type: "string", maxLength: 64 } } },
+      },
+    },
+    async (req) => {
+      const m = /^([0-9a-f]{8})-([0-9a-f]{4})-([1-8])([0-9a-f]{3})-([89ab])([0-9a-f]{3})-([0-9a-f]{12})$/i.exec(req.body.uuid.trim());
+      if (!m) return { valid: false, version: null, variant: null };
+      return { valid: true, version: Number(m[3]), variant: "RFC 4122" };
+    },
+  );
+
+  app.post<{ Body: { min?: number; max?: number; count?: number } }>(
+    "/v1/random/number",
+    {
+      schema: {
+        summary: "Cryptographically strong random integers",
+        tags: ["generators"],
+        body: {
+          type: "object",
+          properties: {
+            min: { type: "integer", default: 0 },
+            max: { type: "integer", default: 100 },
+            count: { type: "integer", minimum: 1, maximum: 1000, default: 1 },
+          },
+        },
+      },
+    },
+    async (req, reply) => {
+      const min = req.body.min ?? 0;
+      const max = req.body.max ?? 100;
+      const count = req.body.count ?? 1;
+      if (min > max) return reply.code(422).send({ error: "bad_range", message: "min must be <= max." });
+      const numbers = Array.from({ length: count }, () => min + randomInt(max - min + 1));
+      return { min, max, numbers };
+    },
+  );
+
+  app.post<{ Body: { items: unknown[]; count?: number } }>(
+    "/v1/random/pick",
+    {
+      schema: {
+        summary: "Randomly pick items from a list",
+        tags: ["generators"],
+        body: {
+          type: "object",
+          required: ["items"],
+          properties: {
+            items: { type: "array", minItems: 1, maxItems: 10000, items: {} },
+            count: { type: "integer", minimum: 1, maximum: 1000, default: 1 },
+          },
+        },
+      },
+    },
+    async (req) => {
+      const { items } = req.body;
+      const count = Math.min(req.body.count ?? 1, items.length);
+      const pool = [...items];
+      const picked: unknown[] = [];
+      for (let i = 0; i < count; i++) picked.push(pool.splice(randomInt(pool.length), 1)[0]);
+      return { picked };
+    },
+  );
+
+  app.post<{ Body: { namespace: string; name: string } }>(
+    "/v1/uuid/v5",
+    {
+      schema: {
+        summary: "Generate a deterministic UUID v5 (namespaced)",
+        description: "Same namespace + name always yields the same UUID. Use 'dns'/'url' or a custom namespace UUID.",
+        tags: ["generators"],
+        body: {
+          type: "object",
+          required: ["namespace", "name"],
+          properties: {
+            namespace: { type: "string", maxLength: 64 },
+            name: { type: "string", maxLength: 1024 },
+          },
+        },
+      },
+    },
+    async (req, reply) => {
+      const uuid = uuidV5(req.body.namespace, req.body.name);
+      if (!uuid) return reply.code(422).send({ error: "invalid_namespace", message: "namespace must be 'dns', 'url', or a valid UUID." });
+      return { uuid };
+    },
+  );
+
   app.post<{ Body: { size?: number; alphabet?: string } }>(
     "/v1/nanoid",
     {
