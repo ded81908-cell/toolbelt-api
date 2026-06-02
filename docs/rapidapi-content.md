@@ -54,7 +54,7 @@ curl -X POST "https://{HOST}/v1/qr" \
   --output qr.png
 \`\`\`
 
-That returns a PNG QR code. Try any of the 59 endpoints interactively in the **Endpoints** tab.
+That returns a PNG QR code. Try any of the 80 endpoints interactively in the **Endpoints** tab.
 
 - Auth: `X-RapidAPI-Key` header (added by RapidAPI)
 - Responses: JSON or images (PNG/SVG)
@@ -68,13 +68,13 @@ That returns a PNG QR code. Try any of the 59 endpoints interactively in the **E
 ## 【JP】短い紹介（Spotlight/ハイライト用）
 
 ```markdown
-**Toolbelt API** は、アプリ開発で頻出する「地味だけど必要」な処理を1つにまとめた高速ユーティリティAPIです。QR・バーコード・請求書・Markdown・ハッシュ・データ変換に加え、**日本語処理（全角半角・かな・ローマ字）** や **国際化（翻字・電話・郵便番号・通貨）**、開発ツール（JWT・色・単位・正規表現的検証）まで59エンドポイント。**AI不使用**なので低コスト・高速・結果が安定。まずは無料プランでどうぞ。
+**Toolbelt API** は、アプリ開発で頻出する「地味だけど必要」な処理を1つにまとめた高速ユーティリティAPIです。QR・バーコード・請求書・Markdown・ハッシュ・データ変換に加え、**日本語処理（全角半角・かな・ローマ字）** や **国際化（翻字・電話・郵便番号・通貨）**、開発ツール（JWT・色・単位・正規表現的検証）まで80エンドポイント。**AI不使用**なので低コスト・高速・結果が安定。まずは無料プランでどうぞ。
 ```
 
 ## 【EN】Short pitch (Spotlight/highlight)
 
 ```markdown
-**Toolbelt API** bundles the boring-but-essential utilities every app needs into one fast service: QR & barcodes, invoices, Markdown→HTML, hashing, data conversion, plus full **internationalisation** (transliteration, phone, postal, currency), a **Japanese** text pack, and dev tools (JWT, colour, units, validators) — 59 endpoints in total. **No AI/inference cost**, so it's cheap, fast and deterministic. Start free.
+**Toolbelt API** bundles the boring-but-essential utilities every app needs into one fast service: QR & barcodes, invoices, Markdown→HTML, hashing, data conversion, plus full **internationalisation** (transliteration, phone, postal, currency), a **Japanese** text pack, and dev tools (JWT, colour, units, validators) — 80 endpoints in total. **No AI/inference cost**, so it's cheap, fast and deterministic. Start free.
 ```
 
 ---
@@ -202,10 +202,10 @@ curl -X POST "https://{HOST}/v1/phone" \
 > 画像は先に渡した `docs/samples/`（qr.png / barcode-ean13.png / invoice.svg / og-image.svg）やロゴが使えます。
 
 ### Spotlight 1 — 価値訴求
-- **Title (JP)**: 59のツールを1つのAPIに、AIコストはゼロ
-- **Title (EN)**: 59 tools in one API — zero AI cost
-- **Description (JP)**: QR・バーコード・請求書・Markdown・ハッシュ・検証・国際化・日本語処理まで。決定的・高速・低コスト。まずは無料プランで。
-- **Description (EN)**: QR & barcodes, invoices, Markdown, hashing, validators, i18n and a Japanese pack — deterministic, fast, cheap. Start free.
+- **Title (JP)**: 80のツールを1つのAPIに、AIコストはゼロ
+- **Title (EN)**: 80 tools in one API — zero AI cost
+- **Description (JP)**: QR・バーコード・請求書・Markdown・ハッシュ・JWT・検証・国際化・日本語処理まで80エンドポイント。決定的（結果が安定）・高速・低コスト。まずは無料のBASICプランでどうぞ。
+- **Description (EN)**: QR & barcodes, invoices, Markdown, hashing, JWT, validators, i18n and a Japanese pack — 80 endpoints in total. Deterministic, fast and cheap. Start free on the BASIC plan.
 - **画像**: `og-image.svg` または ロゴ
 
 ### Spotlight 2 — 日本語特化（差別化）
@@ -217,15 +217,15 @@ curl -X POST "https://{HOST}/v1/phone" \
 ### Spotlight 3 — 画像/コード
 - **Title (JP)**: QR・バーコード・書類をワンコールで
 - **Title (EN)**: QR, barcodes & documents in one call
-- **Description (JP)**: QR（Wi-Fi/vCard対応）、Code128/EAN/UPC/PDF417、SVG請求書、Markdown→HTML。
-- **Description (EN)**: QR (incl. Wi-Fi/vCard), Code128/EAN/UPC/PDF417, SVG invoices and Markdown→HTML.
+- **Description (JP)**: QRコード（Wi-Fi接続・vCard対応）、Code128/EAN/UPC/ITF/DataMatrix/PDF417、SVG請求書（税込合計を自動計算）、Markdown→サニタイズ済みHTML。PNG・SVGで出力。
+- **Description (EN)**: QR codes (incl. Wi-Fi & vCard), Code128/EAN/UPC/ITF/DataMatrix/PDF417, SVG invoices with auto-computed totals, and Markdown→sanitized HTML. Output as PNG or SVG.
 - **画像**: `barcode-ean13.png` または `qr.png`
 
 ### Spotlight 4 — 検証スイート
 - **Title (JP)**: あらゆる入力を検証
 - **Title (EN)**: Validate everything
-- **Description (JP)**: メール・クレジットカード(Luhn)・IBAN・電話(E.164)・郵便番号・パスワード強度。
-- **Description (EN)**: Email, credit card (Luhn), IBAN, phone (E.164), postal codes and password strength.
+- **Description (JP)**: メール・クレジットカード(Luhn)・IBAN(mod-97)・電話(E.164)・郵便番号・パスワード強度、さらにPIIマスキングまで。
+- **Description (EN)**: Email, credit card (Luhn), IBAN (mod-97), phone (E.164), postal codes, password strength — plus PII redaction.
 
 ---
 
@@ -236,7 +236,7 @@ curl -X POST "https://{HOST}/v1/phone" \
 ```markdown
 **Title:** Welcome 👋 — Getting started & feature requests
 
-Thanks for checking out Toolbelt API! 59 deterministic, zero-AI-cost utilities
+Thanks for checking out Toolbelt API! 80 deterministic, zero-AI-cost utilities
 behind one base URL.
 
 - New here? Subscribe to the free **BASIC** plan and try `GET /v1/uuid` or `POST /v1/qr`.
