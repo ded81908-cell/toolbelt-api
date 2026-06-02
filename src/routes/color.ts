@@ -42,6 +42,34 @@ function rgbToHsl({ r, g, b }: RGB): { h: number; s: number; l: number } {
   return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
 }
 
+function hslToRgb(h: number, s: number, l: number): RGB {
+  h /= 360; s /= 100; l /= 100;
+  const hue = (p: number, q: number, t: number): number => {
+    if (t < 0) t += 1;
+    if (t > 1) t -= 1;
+    if (t < 1 / 6) return p + (q - p) * 6 * t;
+    if (t < 1 / 2) return q;
+    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+    return p;
+  };
+  let r: number, g: number, b: number;
+  if (s === 0) { r = g = b = l; }
+  else {
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+    r = hue(p, q, h + 1 / 3); g = hue(p, q, h); b = hue(p, q, h - 1 / 3);
+  }
+  return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
+}
+
+function mix(c: RGB, target: number, amount: number): RGB {
+  return {
+    r: Math.round(c.r + (target - c.r) * amount),
+    g: Math.round(c.g + (target - c.g) * amount),
+    b: Math.round(c.b + (target - c.b) * amount),
+  };
+}
+
 function relativeLuminance({ r, g, b }: RGB): number {
   const lin = [r, g, b].map((v) => {
     const c = v / 255;
@@ -65,6 +93,26 @@ export async function colorRoutes(app: FastifyInstance): Promise<void> {
       if (!rgb) return reply.code(422).send({ error: "invalid_color", message: "Use #hex, hex or rgb(r,g,b)." });
       const { h, s, l } = rgbToHsl(rgb);
       return { hex: toHex(rgb), rgb, hsl: { h, s, l }, css: { rgb: `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`, hsl: `hsl(${h}, ${s}%, ${l}%)` } };
+    },
+  );
+
+  app.post<{ Body: { color: string } }>(
+    "/v1/color/palette",
+    {
+      schema: {
+        summary: "Generate a palette (tints, shades, complementary) from a color",
+        tags: ["color"],
+        body: { type: "object", required: ["color"], properties: { color: { type: "string", maxLength: 64 } } },
+      },
+    },
+    async (req, reply) => {
+      const rgb = parseColor(req.body.color);
+      if (!rgb) return reply.code(422).send({ error: "invalid_color", message: "Use #hex, hex or rgb(r,g,b)." });
+      const tints = [0.2, 0.4, 0.6, 0.8].map((a) => toHex(mix(rgb, 255, a)));
+      const shades = [0.2, 0.4, 0.6, 0.8].map((a) => toHex(mix(rgb, 0, a)));
+      const { h, s, l } = rgbToHsl(rgb);
+      const complementary = toHex(hslToRgb((h + 180) % 360, s, l));
+      return { base: toHex(rgb), tints, shades, complementary };
     },
   );
 

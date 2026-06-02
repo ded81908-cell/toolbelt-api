@@ -471,6 +471,83 @@ describe("checksum", () => {
   });
 });
 
+describe("network", () => {
+  it("calculates a /24 subnet", async () => {
+    const res = await auth({ cidr: "192.168.1.10/24" }, "/v1/cidr");
+    const b = res.json();
+    expect(b.network).toBe("192.168.1.0");
+    expect(b.broadcast).toBe("192.168.1.255");
+    expect(b.netmask).toBe("255.255.255.0");
+    expect(b.usableHosts).toBe(254);
+  });
+});
+
+describe("mime", () => {
+  it("looks up a png mime type", async () => {
+    const res = await auth({ filename: "photo.PNG" }, "/v1/mime");
+    expect(res.json().mime).toBe("image/png");
+  });
+});
+
+describe("gravatar", () => {
+  it("hashes an email to a gravatar url", async () => {
+    const res = await auth({ email: " MyEmail@Example.com " }, "/v1/gravatar");
+    // md5 of "myemail@example.com"
+    expect(res.json().hash).toBe("60a6c20d49f49bc210ac98d7e47c74a0");
+    expect(res.json().url).toContain("gravatar.com/avatar/");
+  });
+});
+
+describe("number words", () => {
+  it("spells an integer", async () => {
+    const res = await auth({ value: 1234567 }, "/v1/number/words");
+    expect(res.json().words).toBe("one million two hundred thirty four thousand five hundred sixty seven");
+  });
+});
+
+describe("color palette", () => {
+  it("returns tints, shades and complementary", async () => {
+    const res = await auth({ color: "#2563eb" }, "/v1/color/palette");
+    const b = res.json();
+    expect(b.tints).toHaveLength(4);
+    expect(b.shades).toHaveLength(4);
+    expect(b.complementary).toMatch(/^#[0-9a-f]{6}$/);
+  });
+});
+
+describe("text similarity", () => {
+  it("scores identical strings as 1", async () => {
+    const res = await auth({ a: "kitten", b: "kitten" }, "/v1/text/similarity");
+    expect(res.json().similarity).toBe(1);
+    expect(res.json().distance).toBe(0);
+  });
+  it("computes Levenshtein distance", async () => {
+    const res = await auth({ a: "kitten", b: "sitting" }, "/v1/text/similarity");
+    expect(res.json().distance).toBe(3);
+  });
+});
+
+describe("timezones", () => {
+  it("filters timezones by substring", async () => {
+    const res = await auth({ filter: "Tokyo" }, "/v1/time/zones");
+    expect(res.json().timezones).toContain("Asia/Tokyo");
+  });
+});
+
+describe("creditcard generate", () => {
+  it("generates Luhn-valid Visa numbers", async () => {
+    const res = await auth({ brand: "visa", count: 3 }, "/v1/creditcard/generate");
+    const nums = res.json().numbers;
+    expect(nums).toHaveLength(3);
+    for (const n of nums) {
+      expect(n).toMatch(/^4\d{15}$/);
+      // verify via the validator endpoint
+      const v = await auth({ number: n }, "/v1/validate/creditcard");
+      expect(v.json().valid).toBe(true);
+    }
+  });
+});
+
 describe("usage", () => {
   it("reports counters for the caller", async () => {
     await auth({ input: "x" }, "/v1/hash");

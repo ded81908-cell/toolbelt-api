@@ -63,6 +63,26 @@ export async function datetimeRoutes(app: FastifyInstance): Promise<void> {
     },
   );
 
+  app.post<{ Body: { filter?: string } }>(
+    "/v1/time/zones",
+    {
+      schema: {
+        summary: "List IANA timezones (optionally filtered)",
+        tags: ["datetime"],
+        body: {
+          type: "object",
+          properties: { filter: { type: "string", maxLength: 64 } },
+        },
+      },
+    },
+    async (req) => {
+      const all = (Intl as unknown as { supportedValuesOf?: (k: string) => string[] }).supportedValuesOf?.("timeZone") ?? [];
+      const filter = req.body.filter?.toLowerCase();
+      const zones = filter ? all.filter((z) => z.toLowerCase().includes(filter)) : all;
+      return { count: zones.length, timezones: zones };
+    },
+  );
+
   app.post<{ Body: { from: string | number; to?: string | number } }>(
     "/v1/time/diff",
     {

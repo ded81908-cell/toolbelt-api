@@ -52,7 +52,46 @@ function lorem(units: "words" | "sentences" | "paragraphs", count: number): stri
   ).join("\n\n");
 }
 
+function levenshtein(a: string, b: string): number {
+  const m = a.length, n = b.length;
+  if (m === 0) return n;
+  if (n === 0) return m;
+  let prev = Array.from({ length: n + 1 }, (_, i) => i);
+  let curr = new Array(n + 1).fill(0);
+  for (let i = 1; i <= m; i++) {
+    curr[0] = i;
+    for (let j = 1; j <= n; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      curr[j] = Math.min(prev[j] + 1, curr[j - 1] + 1, prev[j - 1] + cost);
+    }
+    [prev, curr] = [curr, prev];
+  }
+  return prev[n];
+}
+
 export async function textRoutes(app: FastifyInstance): Promise<void> {
+  app.post<{ Body: { a: string; b: string } }>(
+    "/v1/text/similarity",
+    {
+      schema: {
+        summary: "String similarity (Levenshtein distance + ratio)",
+        tags: ["text"],
+        body: {
+          type: "object",
+          required: ["a", "b"],
+          properties: { a: { type: "string", maxLength: 10_000 }, b: { type: "string", maxLength: 10_000 } },
+        },
+      },
+    },
+    async (req) => {
+      const { a, b } = req.body;
+      const distance = levenshtein(a, b);
+      const maxLen = Math.max(a.length, b.length);
+      const similarity = maxLen === 0 ? 1 : 1 - distance / maxLen;
+      return { distance, similarity: Math.round(similarity * 10000) / 10000 };
+    },
+  );
+
   app.post<{ Body: { text: string; target: CaseTarget } }>(
     "/v1/text/case",
     {

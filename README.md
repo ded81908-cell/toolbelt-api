@@ -43,6 +43,14 @@ gross margin is near 100%.
 | `POST /v1/text/diff` · `/v1/html/entities` | Line diff; HTML entity encode/decode |
 | `POST /v1/time/diff` | Humanized duration between timestamps |
 | `POST /v1/checksum/crc32` | CRC32 checksum |
+| `POST /v1/cidr` | IPv4 subnet / CIDR calculator |
+| `POST /v1/mime` | MIME type lookup by filename/extension |
+| `POST /v1/gravatar` | Gravatar avatar URL from an email |
+| `POST /v1/number/words` | Spell an integer in English words |
+| `POST /v1/color/palette` | Tints / shades / complementary from a color |
+| `POST /v1/text/similarity` | Levenshtein distance + similarity ratio |
+| `POST /v1/time/zones` | List IANA timezones (filterable) |
+| `POST /v1/creditcard/generate` | Luhn-valid **test** card numbers |
 | `GET  /v1/usage` | The calling client's own usage counters |
 | `GET  /health` | Liveness (unauthenticated) |
 | `GET  /docs` | Interactive OpenAPI (Swagger UI) |
@@ -65,7 +73,7 @@ curl -X POST http://localhost:3000/v1/qr \
 
 ```bash
 npm run build      # tsc -> dist/
-npm test           # vitest, 62 tests
+npm test           # vitest, 71 tests
 npm run typecheck  # no-emit type check (also runs in CI)
 ```
 
@@ -136,7 +144,8 @@ src/
                   jp, bulk, barcode, invoice, markdown,
                   intl (translit/phone/postal), currency,
                   color, text, datetime, jwt, validate, units, geo,
-                  qrextra (wifi/vcard), url, number, idgen, checksum
+                  qrextra (wifi/vcard), url, number, idgen, checksum,
+                  network (cidr), mime, gravatar
 public/index.html landing page
 test/api.test.ts  end-to-end tests
 ```

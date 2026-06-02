@@ -48,7 +48,50 @@ function fromRoman(s: string): number | null {
   return toRoman(total) === up ? total : null;
 }
 
+const ONES = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
+  "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
+const TENS = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+const SCALES = ["", "thousand", "million", "billion", "trillion", "quadrillion"];
+
+function threeToWords(n: number): string {
+  const parts: string[] = [];
+  if (n >= 100) { parts.push(ONES[Math.floor(n / 100)], "hundred"); n %= 100; }
+  if (n >= 20) { parts.push(TENS[Math.floor(n / 10)]); n %= 10; if (n) parts.push(ONES[n]); }
+  else if (n > 0) parts.push(ONES[n]);
+  return parts.join(" ");
+}
+
+function numberToWords(num: number): string {
+  if (num === 0) return "zero";
+  const neg = num < 0;
+  let n = Math.abs(num);
+  const groups: number[] = [];
+  while (n > 0) { groups.push(n % 1000); n = Math.floor(n / 1000); }
+  const words: string[] = [];
+  for (let i = groups.length - 1; i >= 0; i--) {
+    if (groups[i] === 0) continue;
+    words.push(threeToWords(groups[i]) + (SCALES[i] ? " " + SCALES[i] : ""));
+  }
+  return (neg ? "negative " : "") + words.join(" ");
+}
+
 export async function numberRoutes(app: FastifyInstance): Promise<void> {
+  app.post<{ Body: { value: number } }>(
+    "/v1/number/words",
+    {
+      schema: {
+        summary: "Spell an integer in English words",
+        tags: ["number"],
+        body: {
+          type: "object",
+          required: ["value"],
+          properties: { value: { type: "integer", minimum: -999999999999999, maximum: 999999999999999 } },
+        },
+      },
+    },
+    async (req) => ({ value: req.body.value, words: numberToWords(req.body.value) }),
+  );
+
   app.post<{
     Body: { value: number; locale?: string; style?: "decimal" | "currency" | "percent"; currency?: string; maximumFractionDigits?: number };
   }>(
