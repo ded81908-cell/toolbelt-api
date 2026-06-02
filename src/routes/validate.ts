@@ -1,4 +1,32 @@
+import { randomInt } from "node:crypto";
 import type { FastifyInstance } from "fastify";
+
+function luhnCheckDigit(partial: string): number {
+  let sum = 0, alt = true;
+  for (let i = partial.length - 1; i >= 0; i--) {
+    let d = partial.charCodeAt(i) - 48;
+    if (alt) { d *= 2; if (d > 9) d -= 9; }
+    sum += d;
+    alt = !alt;
+  }
+  return (10 - (sum % 10)) % 10;
+}
+
+const GEN: Record<string, { prefix: () => string; length: number }> = {
+  visa: { prefix: () => "4", length: 16 },
+  mastercard: { prefix: () => "5" + randomInt(1, 6), length: 16 },
+  amex: { prefix: () => "3" + (randomInt(0, 2) ? "7" : "4"), length: 15 },
+  discover: { prefix: () => "6011", length: 16 },
+  jcb: { prefix: () => "35", length: 16 },
+  diners: { prefix: () => "36", length: 14 },
+};
+
+function generateCard(brand: string): string {
+  const spec = GEN[brand];
+  let num = spec.prefix();
+  while (num.length < spec.length - 1) num += randomInt(0, 10);
+  return num + luhnCheckDigit(num);
+}
 
 function luhnValid(num: string): boolean {
   let sum = 0, alt = false;
@@ -121,6 +149,29 @@ export async function validateRoutes(app: FastifyInstance): Promise<void> {
     async (req) => {
       const { valid, formatted } = ibanValid(req.body.iban);
       return { valid, formatted, countryCode: valid ? formatted.slice(0, 2) : null };
+    },
+  );
+
+  app.post<{ Body: { brand?: string; count?: number } }>(
+    "/v1/creditcard/generate",
+    {
+      schema: {
+        summary: "Generate Luhn-valid test card numbers (for testing only)",
+        description: "Produces fake but Luhn-valid card numbers for QA/sandbox use. These are NOT real cards.",
+        tags: ["validation"],
+        body: {
+          type: "object",
+          properties: {
+            brand: { type: "string", enum: Object.keys(GEN), default: "visa" },
+            count: { type: "integer", minimum: 1, maximum: 100, default: 1 },
+          },
+        },
+      },
+    },
+    async (req) => {
+      const brand = req.body.brand ?? "visa";
+      const count = req.body.count ?? 1;
+      return { brand, numbers: Array.from({ length: count }, () => generateCard(brand)) };
     },
   );
 
