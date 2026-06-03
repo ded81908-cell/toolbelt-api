@@ -29,12 +29,12 @@ Toolbelt API — QR Code, Barcode, Invoice, JSON, JWT & i18n Utilities
 
 **EN（≈150字）**
 ```
-59 developer utilities in one API: QR code & barcode generator, invoice (SVG) & PDF-ready Markdown, JSON formatter, hashing, JWT, bcrypt, UUID, email/IBAN/credit-card validation, phone & currency, plus a Japanese text toolkit. Fast, deterministic, no AI cost.
+80 developer utilities in one API: QR code & barcode generator, invoice (SVG) & PDF-ready Markdown, JSON formatter, hashing, JWT, bcrypt, UUID, email/IBAN/credit-card validation, phone & currency, plus a Japanese text toolkit. Fast, deterministic, no AI cost.
 ```
 
 **JP（≈140字）**
 ```
-QRコード・バーコード生成、請求書、Markdown→HTML、JSON整形、ハッシュ、JWT、UUID、メール/IBAN/カード検証、電話・通貨、そして日本語処理（全角半角・かな・ローマ字）まで59機能を1つのAPIに。高速・安定・AIコストゼロ。
+QRコード・バーコード生成、請求書、Markdown→HTML、JSON整形、ハッシュ、JWT、bcrypt、UUID、メール/IBAN/カード検証、電話・通貨、そして日本語処理（全角半角・かな・ローマ字）まで80機能を1つのAPIに。高速・安定・AIコストゼロ。
 ```
 
 ---
