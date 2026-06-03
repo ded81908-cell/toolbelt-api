@@ -4,7 +4,7 @@
 > Title MUST start with "Show HN:". Be online to answer comments for hours.
 > Don't use emoji. Don't exaggerate. Link to the live docs, not a paywall.
 
-Replace `{EN_LISTING}` / `{HOST}` before posting.
+Replace `https://rapidapi.com/ded81908cell/api/toolbelt-api-qr-code-invoice-json-jwt-i18n-utilities` / `toolbelt-api-9oll.onrender.com` before posting.
 
 ---
 
@@ -15,7 +15,7 @@ Show HN: Toolbelt API – 80 small dev utilities (QR, invoices, JWT, i18n) in on
 
 ## URL
 ```
-{EN_LISTING}
+https://rapidapi.com/ded81908cell/api/toolbelt-api-qr-code-invoice-json-jwt-i18n-utilities
 ```
 (or link directly to the live Swagger docs: https://toolbelt-api-9oll.onrender.com/docs)
 

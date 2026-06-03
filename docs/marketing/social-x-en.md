@@ -1,6 +1,6 @@
 # X / Twitter posts (English)
 
-Replace `{EN_LISTING}` before posting. One block = one tweet.
+Replace `https://rapidapi.com/ded81908cell/api/toolbelt-api-qr-code-invoice-json-jwt-i18n-utilities` before posting. One block = one tweet.
 
 ---
 
@@ -13,7 +13,7 @@ QR & barcodes, invoices, Markdown→HTML, hashing, JWT, UUID, email/IBAN/card
 validation, i18n + a Japanese text pack.
 
 No AI = fast, cheap, deterministic. Free tier 👇
-{EN_LISTING}
+https://rapidapi.com/ded81908cell/api/toolbelt-api-qr-code-invoice-json-jwt-i18n-utilities
 
 #buildinpublic #API #webdev
 ```
@@ -32,7 +32,7 @@ curl -X POST ".../v1/qr" -H "X-RapidAPI-Key: KEY" \
   -d '{"text":"https://example.com","format":"svg"}'
 
 80 endpoints. Free tier 👇
-{EN_LISTING}
+https://rapidapi.com/ded81908cell/api/toolbelt-api-qr-code-invoice-json-jwt-i18n-utilities
 ```
 
 ---
@@ -43,7 +43,7 @@ curl -X POST ".../v1/qr" -H "X-RapidAPI-Key: KEY" \
 1/ Tired of pulling a library for every little job (QR, hashing, invoices,
 JWT, validation…)? I put 80 of them behind a single API. No AI, so it's
 fast + deterministic. 🧰
-{EN_LISTING}
+https://rapidapi.com/ded81908cell/api/toolbelt-api-qr-code-invoice-json-jwt-i18n-utilities
 ```
 ```
 2/ Auth is one header. QR code:
@@ -72,5 +72,5 @@ Rarely available elsewhere.
 ```
 5/ Free tier to start, cheap usage-based pricing after (no inference cost).
 Give it a spin 👇 and tell me what endpoint to add next.
-{EN_LISTING}
+https://rapidapi.com/ded81908cell/api/toolbelt-api-qr-code-invoice-json-jwt-i18n-utilities
 ```

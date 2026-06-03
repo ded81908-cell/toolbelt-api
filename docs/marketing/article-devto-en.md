@@ -10,7 +10,7 @@ tags: api, webdev, javascript, python
 Every app needs the same dull little jobs: generate a QR code, hash a string,
 validate an email, format some JSON, build an invoice. I got tired of pulling a
 new dependency for each one, so I put **80 of them behind a single API**:
-[Toolbelt API]({EN_LISTING}).
+[Toolbelt API](https://rapidapi.com/ded81908cell/api/toolbelt-api-qr-code-invoice-json-jwt-i18n-utilities).
 
 No AI, no inference cost — so it's **fast, cheap and deterministic** (same input,
 same output, every time).
@@ -20,9 +20,9 @@ same output, every time).
 Auth is a single header. Here's a QR code:
 
 ```bash
-curl -X POST "https://{HOST}/v1/qr" \
+curl -X POST "https://toolbelt-api-9oll.onrender.com/v1/qr" \
   -H "X-RapidAPI-Key: {KEY}" \
-  -H "X-RapidAPI-Host: {HOST}" \
+  -H "X-RapidAPI-Host: toolbelt-api-9oll.onrender.com" \
   -H "Content-Type: application/json" \
   -d '{"text":"https://example.com","format":"svg"}' > qr.svg
 ```
@@ -66,11 +66,11 @@ full-width/half-width input alone saves a surprising amount of pain.
 ## Use it from code
 
 ```js
-const res = await fetch("https://{HOST}/v1/hash", {
+const res = await fetch("https://toolbelt-api-9oll.onrender.com/v1/hash", {
   method: "POST",
   headers: {
     "X-RapidAPI-Key": "{KEY}",
-    "X-RapidAPI-Host": "{HOST}",
+    "X-RapidAPI-Host": "toolbelt-api-9oll.onrender.com",
     "Content-Type": "application/json",
   },
   body: JSON.stringify({ input: "hello", algorithm: "sha256" }),
@@ -80,8 +80,8 @@ console.log((await res.json()).hash);
 
 ```python
 import requests
-r = requests.post("https://{HOST}/v1/qr",
-    headers={"X-RapidAPI-Key":"{KEY}","X-RapidAPI-Host":"{HOST}"},
+r = requests.post("https://toolbelt-api-9oll.onrender.com/v1/qr",
+    headers={"X-RapidAPI-Key":"{KEY}","X-RapidAPI-Host":"toolbelt-api-9oll.onrender.com"},
     json={"text":"https://example.com","format":"png"})
 open("qr.png","wb").write(r.content)
 ```
@@ -95,6 +95,6 @@ user-agent parser · PII redaction · and the Japanese pack.
 
 ## Try it
 
-There's a free tier — kick the tyres here 👉 **{EN_LISTING}**
+There's a free tier — kick the tyres here 👉 **https://rapidapi.com/ded81908cell/api/toolbelt-api-qr-code-invoice-json-jwt-i18n-utilities**
 
 If a utility you need is missing, drop a comment. I ship requested endpoints fast.

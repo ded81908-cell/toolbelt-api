@@ -15,7 +15,7 @@
 - ハッシュ・JWT・UUID・バリデーション……
 
 毎回ライブラリを探して、依存を増やして、メンテして……正直しんどい。
-そこで **これらを1本のAPIにまとめた [Toolbelt API](（{JP_LISTING}）)** を作りました。AI不使用なので高速・低コスト・結果が安定（決定的）です。
+そこで **これらを1本のAPIにまとめた [Toolbelt API](（https://rapidapi.com/ded81908cell/api/toolbelt-api-Kai-Fa-Zhe-Xiang-keyuteiritei）)** を作りました。AI不使用なので高速・低コスト・結果が安定（決定的）です。
 
 この記事では、特に**日本語処理**を中心に使い方を紹介します。
 
@@ -26,9 +26,9 @@
 RapidAPI経由で叩くだけ。認証は `X-RapidAPI-Key` ヘッダ1つ。
 
 ```bash
-curl -X POST "https://{HOST}/v1/jp/convert" \
+curl -X POST "https://toolbelt-api-9oll.onrender.com/v1/jp/convert" \
   -H "X-RapidAPI-Key: {KEY}" \
-  -H "X-RapidAPI-Host: {HOST}" \
+  -H "X-RapidAPI-Host: toolbelt-api-9oll.onrender.com" \
   -H "Content-Type: application/json" \
   -d '{"text":"ＡＢＣ１２３","operation":"hankaku"}'
 ```
@@ -54,8 +54,8 @@ curl -X POST "https://{HOST}/v1/jp/convert" \
 日本語タイトルからURLスラッグを作るのは地味に面倒ですが、これも1リクエスト。
 
 ```bash
-curl -X POST "https://{HOST}/v1/jp/slug" \
-  -H "X-RapidAPI-Key: {KEY}" -H "X-RapidAPI-Host: {HOST}" \
+curl -X POST "https://toolbelt-api-9oll.onrender.com/v1/jp/slug" \
+  -H "X-RapidAPI-Key: {KEY}" -H "X-RapidAPI-Host: toolbelt-api-9oll.onrender.com" \
   -H "Content-Type: application/json" \
   -d '{"text":"東京タワーの夜景"}'
 # → {"slug":"tokyotawanoyakei"}
@@ -68,11 +68,11 @@ curl -X POST "https://{HOST}/v1/jp/slug" \
 ## JavaScript から使う
 
 ```js
-const res = await fetch("https://{HOST}/v1/jp/convert", {
+const res = await fetch("https://toolbelt-api-9oll.onrender.com/v1/jp/convert", {
   method: "POST",
   headers: {
     "X-RapidAPI-Key": "{KEY}",
-    "X-RapidAPI-Host": "{HOST}",
+    "X-RapidAPI-Host": "toolbelt-api-9oll.onrender.com",
     "Content-Type": "application/json",
   },
   body: JSON.stringify({ text: "ＡＢＣ１２３", operation: "hankaku" }),
@@ -87,10 +87,10 @@ console.log(data.result); // "ABC123"
 import requests
 
 r = requests.post(
-    "https://{HOST}/v1/jp/convert",
+    "https://toolbelt-api-9oll.onrender.com/v1/jp/convert",
     headers={
         "X-RapidAPI-Key": "{KEY}",
-        "X-RapidAPI-Host": "{HOST}",
+        "X-RapidAPI-Host": "toolbelt-api-9oll.onrender.com",
         "Content-Type": "application/json",
     },
     json={"text": "とうきょう", "operation": "romaji"},
@@ -126,6 +126,6 @@ print(r.json()["result"])  # "toukyou"
 
 「全角半角・かな・ローマ字」みたいな**日本語特有の処理を外部APIに逃がせる**のは、地味に効きます。依存を増やさず、メンテも不要。
 
-気になった方はぜひ無料プランで叩いてみてください 👉 **{JP_LISTING}**
+気になった方はぜひ無料プランで叩いてみてください 👉 **https://rapidapi.com/ded81908cell/api/toolbelt-api-Kai-Fa-Zhe-Xiang-keyuteiritei**
 
 フィードバック・「こんな機能欲しい」も歓迎です。コメントください！

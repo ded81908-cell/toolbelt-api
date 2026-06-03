@@ -3,7 +3,7 @@
 > Launch Tue–Thu, 00:01 PT for a full day of votes. Have 3–5 friends ready to
 > comment (not just upvote). Reply to every comment fast.
 
-Replace `{EN_LISTING}` before launching.
+Replace `https://rapidapi.com/ded81908cell/api/toolbelt-api-qr-code-invoice-json-jwt-i18n-utilities` before launching.
 
 ---
 
@@ -50,7 +50,7 @@ Highlights:
 • i18n: transliteration, postal codes, currency
 • 🇯🇵 Japanese text pack: full-width⇄half-width, kana, romaji (the niche bit)
 
-Free tier to try: {EN_LISTING}
+Free tier to try: https://rapidapi.com/ded81908cell/api/toolbelt-api-qr-code-invoice-json-jwt-i18n-utilities
 
 I'd love feedback — and I ship requested endpoints quickly, so tell me what's
 missing from your toolbelt!

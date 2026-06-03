@@ -8,9 +8,9 @@ Ready-to-publish promo content for Toolbelt API across every free channel.
 > publishing is a copy-paste + one click.
 
 Before publishing, replace these placeholders everywhere:
-- `{JP_LISTING}` → your Japanese RapidAPI listing URL
-- `{EN_LISTING}` → your global RapidAPI listing URL
-- `{HOST}` → your `X-RapidAPI-Host` (e.g. `toolbelt-api.p.rapidapi.com`)
+- `https://rapidapi.com/ded81908cell/api/toolbelt-api-Kai-Fa-Zhe-Xiang-keyuteiritei` → your Japanese RapidAPI listing URL
+- `https://rapidapi.com/ded81908cell/api/toolbelt-api-qr-code-invoice-json-jwt-i18n-utilities` → your global RapidAPI listing URL
+- `toolbelt-api-9oll.onrender.com` → your `X-RapidAPI-Host` (e.g. `toolbelt-api.p.rapidapi.com`)
 - `{KEY}` → reader's own RapidAPI key (leave as-is in code; it's a placeholder)
 
 ---

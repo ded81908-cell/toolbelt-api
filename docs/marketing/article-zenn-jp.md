@@ -10,7 +10,7 @@ published: true
 
 ## 作ったもの
 
-[Toolbelt API]({JP_LISTING}) — 開発で頻出する「地味だけど必要」な処理を**80エンドポイント**にまとめたユーティリティAPIです。AI不使用なので**高速・低コスト・決定的（毎回同じ結果）**。
+[Toolbelt API](https://rapidapi.com/ded81908cell/api/toolbelt-api-Kai-Fa-Zhe-Xiang-keyuteiritei) — 開発で頻出する「地味だけど必要」な処理を**80エンドポイント**にまとめたユーティリティAPIです。AI不使用なので**高速・低コスト・決定的（毎回同じ結果）**。
 
 QR・バーコード・請求書・Markdown・ハッシュ・JWT・UUID・各種バリデーション……そして他のAPIにあまりない **日本語処理（全角半角・かな・ローマ字）** が売りです。
 
@@ -29,8 +29,8 @@ QR・バーコード・請求書・Markdown・ハッシュ・JWT・UUID・各種
 
 ```bash
 # 全角→半角
-curl -X POST "https://{HOST}/v1/jp/convert" \
-  -H "X-RapidAPI-Key: {KEY}" -H "X-RapidAPI-Host: {HOST}" \
+curl -X POST "https://toolbelt-api-9oll.onrender.com/v1/jp/convert" \
+  -H "X-RapidAPI-Key: {KEY}" -H "X-RapidAPI-Host: toolbelt-api-9oll.onrender.com" \
   -H "Content-Type: application/json" \
   -d '{"text":"ＡＢＣ１２３","operation":"hankaku"}'
 # → {"result":"ABC123"}
@@ -38,8 +38,8 @@ curl -X POST "https://{HOST}/v1/jp/convert" \
 
 ```bash
 # 請求書（SVG・税込合計を自動計算）
-curl -X POST "https://{HOST}/v1/invoice" \
-  -H "X-RapidAPI-Key: {KEY}" -H "X-RapidAPI-Host: {HOST}" \
+curl -X POST "https://toolbelt-api-9oll.onrender.com/v1/invoice" \
+  -H "X-RapidAPI-Key: {KEY}" -H "X-RapidAPI-Host: toolbelt-api-9oll.onrender.com" \
   -H "Content-Type: application/json" \
   -d '{"number":"INV-001","currency":"JPY","taxRate":10,
        "from":{"name":"自社"},"to":{"name":"取引先"},
@@ -67,6 +67,6 @@ curl -X POST "https://{HOST}/v1/invoice" \
 
 ## おわりに
 
-無料プランがあるので、まずは気軽に叩いてみてください 👉 **{JP_LISTING}**
+無料プランがあるので、まずは気軽に叩いてみてください 👉 **https://rapidapi.com/ded81908cell/api/toolbelt-api-Kai-Fa-Zhe-Xiang-keyuteiritei**
 
 「この処理も欲しい」という要望があれば、わりとすぐ追加します。コメント/リアクションお待ちしています！

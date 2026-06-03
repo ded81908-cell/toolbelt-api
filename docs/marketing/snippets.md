@@ -1,6 +1,6 @@
 # Copy-paste snippets (embed in any article/post)
 
-Working examples readers can run immediately. Replace `{HOST}` and `{KEY}`.
+Working examples readers can run immediately. Replace `toolbelt-api-9oll.onrender.com` and `{KEY}`.
 
 ---
 
@@ -8,20 +8,20 @@ Working examples readers can run immediately. Replace `{HOST}` and `{KEY}`.
 
 ```bash
 # QR code (SVG)
-curl -X POST "https://{HOST}/v1/qr" \
-  -H "X-RapidAPI-Key: {KEY}" -H "X-RapidAPI-Host: {HOST}" \
+curl -X POST "https://toolbelt-api-9oll.onrender.com/v1/qr" \
+  -H "X-RapidAPI-Key: {KEY}" -H "X-RapidAPI-Host: toolbelt-api-9oll.onrender.com" \
   -H "Content-Type: application/json" \
   -d '{"text":"https://example.com","format":"svg"}' > qr.svg
 
 # SHA-256 hash
-curl -X POST "https://{HOST}/v1/hash" \
-  -H "X-RapidAPI-Key: {KEY}" -H "X-RapidAPI-Host: {HOST}" \
+curl -X POST "https://toolbelt-api-9oll.onrender.com/v1/hash" \
+  -H "X-RapidAPI-Key: {KEY}" -H "X-RapidAPI-Host: toolbelt-api-9oll.onrender.com" \
   -H "Content-Type: application/json" \
   -d '{"input":"hello","algorithm":"sha256"}'
 
 # Japanese: full-width -> half-width
-curl -X POST "https://{HOST}/v1/jp/convert" \
-  -H "X-RapidAPI-Key: {KEY}" -H "X-RapidAPI-Host: {HOST}" \
+curl -X POST "https://toolbelt-api-9oll.onrender.com/v1/jp/convert" \
+  -H "X-RapidAPI-Key: {KEY}" -H "X-RapidAPI-Host: toolbelt-api-9oll.onrender.com" \
   -H "Content-Type: application/json" \
   -d '{"text":"ＡＢＣ１２３","operation":"hankaku"}'
 ```
@@ -29,10 +29,10 @@ curl -X POST "https://{HOST}/v1/jp/convert" \
 ## JavaScript (fetch)
 
 ```js
-const BASE = "https://{HOST}";
+const BASE = "https://toolbelt-api-9oll.onrender.com";
 const headers = {
   "X-RapidAPI-Key": "{KEY}",
-  "X-RapidAPI-Host": "{HOST}",
+  "X-RapidAPI-Host": "toolbelt-api-9oll.onrender.com",
   "Content-Type": "application/json",
 };
 
@@ -56,10 +56,10 @@ const blob = await img.blob(); // use as <img> src or save
 ```python
 import requests
 
-BASE = "https://{HOST}"
+BASE = "https://toolbelt-api-9oll.onrender.com"
 HEADERS = {
     "X-RapidAPI-Key": "{KEY}",
-    "X-RapidAPI-Host": "{HOST}",
+    "X-RapidAPI-Host": "toolbelt-api-9oll.onrender.com",
     "Content-Type": "application/json",
 }
 
@@ -79,8 +79,8 @@ open("qr.png", "wb").write(img.content)
 ```js
 import axios from "axios";
 const api = axios.create({
-  baseURL: "https://{HOST}",
-  headers: { "X-RapidAPI-Key": "{KEY}", "X-RapidAPI-Host": "{HOST}" },
+  baseURL: "https://toolbelt-api-9oll.onrender.com",
+  headers: { "X-RapidAPI-Key": "{KEY}", "X-RapidAPI-Host": "toolbelt-api-9oll.onrender.com" },
 });
 
 const { data } = await api.post("/v1/currency/convert", {

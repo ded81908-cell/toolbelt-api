@@ -2,7 +2,7 @@
 
 Free, evergreen traffic. Lower effort, compounding returns.
 
-Replace `{EN_LISTING}` before submitting.
+Replace `https://rapidapi.com/ded81908cell/api/toolbelt-api-qr-code-invoice-json-jwt-i18n-utilities` before submitting.
 
 ---
 
@@ -23,7 +23,7 @@ CONTRIBUTING + alphabetical ordering rules first):
 ```
 or markdown list style:
 ```
-- [Toolbelt API]({EN_LISTING}) — 80 dev utilities (QR, barcodes, invoices, JWT, hashing, validators, i18n, Japanese text). No AI cost.
+- [Toolbelt API](https://rapidapi.com/ded81908cell/api/toolbelt-api-qr-code-invoice-json-jwt-i18n-utilities) — 80 dev utilities (QR, barcodes, invoices, JWT, hashing, validators, i18n, Japanese text). No AI cost.
 ```
 
 > PRs to `public-apis` are heavily moderated. Follow the exact table format,
@@ -45,7 +45,7 @@ Create small companion repos that solve one real task using the API:
 - `toolbelt-invoice-demo` (Python) — "Turn a JSON order into an SVG/PDF invoice"
 - `toolbelt-japanese-demo` (JS) — "Normalize Japanese form input"
 
-Each README links back to `{EN_LISTING}`. These rank for long-tail queries.
+Each README links back to `https://rapidapi.com/ded81908cell/api/toolbelt-api-qr-code-invoice-json-jwt-i18n-utilities`. These rank for long-tail queries.
 
 ## 4. StackOverflow / community answers
 

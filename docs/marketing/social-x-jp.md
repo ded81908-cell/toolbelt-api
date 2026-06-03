@@ -1,6 +1,6 @@
 # X / Twitter 投稿（日本語）
 
-公開前に `{JP_LISTING}` を置換。1ツイート＝1ブロック。スレッドはそのまま連投。
+公開前に `https://rapidapi.com/ded81908cell/api/toolbelt-api-Kai-Fa-Zhe-Xiang-keyuteiritei` を置換。1ツイート＝1ブロック。スレッドはそのまま連投。
 
 ---
 
@@ -13,7 +13,7 @@ QR・バーコード・請求書・Markdown・ハッシュ・JWT・UUID・各種
 さらに🇯🇵全角半角/かな/ローマ字まで。
 
 AI不使用で高速・低コスト・結果が安定。無料プランあり👇
-{JP_LISTING}
+https://rapidapi.com/ded81908cell/api/toolbelt-api-Kai-Fa-Zhe-Xiang-keyuteiritei
 
 #個人開発 #API
 ```
@@ -29,7 +29,7 @@ curl叩くだけ👇
 operation を変えれば かな⇄カナ、かな→ローマ字、URLスラッグ化もできます。
 
 日本語処理を外部APIに逃がせるの、依存増えなくて快適です。
-{JP_LISTING}
+https://rapidapi.com/ded81908cell/api/toolbelt-api-Kai-Fa-Zhe-Xiang-keyuteiritei
 
 #日本語処理 #個人開発
 ```
@@ -42,7 +42,7 @@ operation を変えれば かな⇄カナ、かな→ローマ字、URLスラッ
 1/ 開発でよくある「このためだけにライブラリ入れる？」問題を解決したくて、
 頻出ユーティリティ80個を1本のAPIにまとめました。
 QR・請求書・ハッシュ・JWT・日本語処理…全部HTTPで叩けます🧰
-{JP_LISTING}
+https://rapidapi.com/ded81908cell/api/toolbelt-api-Kai-Fa-Zhe-Xiang-keyuteiritei
 ```
 ```
 2/ 認証は X-RapidAPI-Key ヘッダ1つ。例：QRコード生成
@@ -70,7 +70,7 @@ PNG/SVGで返ります。Wi-Fi接続用・vCardのQRも。
 ```
 5/ AI不使用なので高速・低コスト・毎回同じ結果（決定的）。
 無料プランがあるのでまず叩いてみてください👇
-{JP_LISTING}
+https://rapidapi.com/ded81908cell/api/toolbelt-api-Kai-Fa-Zhe-Xiang-keyuteiritei
 
 「この処理も欲しい」要望歓迎です！
 ```

@@ -4,7 +4,7 @@
 > Post to ONE subreddit at a time. Reply to every comment. Read each sub's rules
 > (some require a self-promo flair or limit links).
 
-Replace `{EN_LISTING}` before posting.
+Replace `https://rapidapi.com/ded81908cell/api/toolbelt-api-qr-code-invoice-json-jwt-i18n-utilities` before posting.
 
 ---
 
@@ -29,7 +29,7 @@ A few examples:
 - POST /v1/jwt/sign → HS256/384/512
 - POST /v1/jp/convert → Japanese full-width⇄half-width, kana, romaji (the niche bit)
 
-Free tier if you want to poke at it: {EN_LISTING}
+Free tier if you want to poke at it: https://rapidapi.com/ded81908cell/api/toolbelt-api-qr-code-invoice-json-jwt-i18n-utilities
 
 Honest question for this sub: which utility would make you actually reach for
 something like this? Happy to add requested endpoints.
@@ -58,7 +58,7 @@ Covers QR/barcodes, invoices, Markdown→HTML, JSON/YAML/CSV, JWT/bcrypt,
 UUID/ULID, email/card/IBAN validation, phone (E.164), currency, plus a Japanese
 text pack. No AI cost.
 
-Free tier: {EN_LISTING}
+Free tier: https://rapidapi.com/ded81908cell/api/toolbelt-api-qr-code-invoice-json-jwt-i18n-utilities
 Feedback + endpoint requests very welcome.
 ```
 
@@ -81,5 +81,5 @@ converting kana→romaji is a recurring chore. I wrapped it in a simple API:
   POST /v1/jp/slug     {"text":"東京タワー"} → "tokyotawa"
 
 It's part of a larger utility API (QR, invoices, validators…), free tier here:
-{EN_LISTING}. Curious if others hit the same pain.
+https://rapidapi.com/ded81908cell/api/toolbelt-api-qr-code-invoice-json-jwt-i18n-utilities. Curious if others hit the same pain.
 ```
