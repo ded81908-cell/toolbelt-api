@@ -43,6 +43,7 @@ import { regexRoutes } from "./routes/regex.js";
 import { userAgentRoutes } from "./routes/useragent.js";
 import { cipherRoutes } from "./routes/cipher.js";
 import { encodingRoutes } from "./routes/encoding.js";
+import { demoRoutes } from "./routes/demo.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -147,6 +148,7 @@ export async function buildServer(config: Config = loadConfig()): Promise<Fastif
   await app.register(userAgentRoutes);
   await app.register(cipherRoutes);
   await app.register(encodingRoutes);
+  await app.register(demoRoutes);
 
   return app;
 }

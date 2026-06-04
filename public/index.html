@@ -4,11 +4,52 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/brand/logo.svg" />
-    <title>Toolbelt API — 50+ developer utilities, pay as you go</title>
+    <link rel="canonical" href="https://toolbelt-api-9oll.onrender.com/" />
+
+    <title>Toolbelt API — 80 developer utilities in one REST API (QR, invoices, JWT, Japanese text)</title>
     <meta
       name="description"
-      content="One fast API for QR & barcodes, invoices, Markdown, data conversion, hashing, validators, i18n and more. No AI bills, predictable pricing, live in minutes."
+      content="One fast REST API for 80 developer utilities: QR & barcodes, invoices, JWT, hashing, validators, JSON/CSV/YAML conversion, i18n and a Japanese text pack (full-width⇄half-width, kana, romaji). No AI bills. Try it live, no signup."
     />
+    <meta
+      name="keywords"
+      content="developer API, QR code API, barcode API, invoice API, JWT API, hashing API, validator API, JSON converter API, Japanese text API, 全角 半角 変換 API, ローマ字変換 API, i18n API, RapidAPI"
+    />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://toolbelt-api-9oll.onrender.com/" />
+    <meta property="og:title" content="Toolbelt API — 80 developer utilities in one REST API" />
+    <meta
+      property="og:description"
+      content="QR & barcodes, invoices, JWT, hashing, validators, conversion, i18n and a Japanese text pack — behind a single fast API. Try it live, no signup."
+    />
+    <meta property="og:image" content="https://toolbelt-api-9oll.onrender.com/brand/banners/banner-overview.png" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Toolbelt API — 80 developer utilities in one REST API" />
+    <meta
+      name="twitter:description"
+      content="QR, barcodes, invoices, JWT, hashing, validators, i18n + a Japanese text pack. One key, one base URL. Try it live."
+    />
+    <meta name="twitter:image" content="https://toolbelt-api-9oll.onrender.com/brand/banners/banner-overview.png" />
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebAPI",
+        "name": "Toolbelt API",
+        "description": "80 developer utilities behind one REST API: QR & barcodes, invoices, JWT, hashing, validators, JSON/CSV/YAML conversion, i18n and a Japanese text pack.",
+        "url": "https://toolbelt-api-9oll.onrender.com/",
+        "documentation": "https://toolbelt-api-9oll.onrender.com/docs",
+        "provider": { "@type": "Organization", "name": "Toolbelt API" },
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD", "description": "Free tier available" }
+      }
+    </script>
+
     <style>
       :root {
         color-scheme: dark;
@@ -48,7 +89,7 @@
       h1 .grad { background: linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
       p.lead { font-size: 20px; color: var(--muted); max-width: 660px; margin: 0; }
       .cta { margin: 30px 0 6px; display: flex; gap: 12px; flex-wrap: wrap; }
-      .btn { padding: 13px 24px; border-radius: 12px; font-weight: 700; font-size: 15px; display: inline-block; transition: transform .08s ease; }
+      .btn { padding: 13px 24px; border-radius: 12px; font-weight: 700; font-size: 15px; display: inline-block; transition: transform .08s ease; cursor: pointer; border: none; }
       .btn:active { transform: translateY(1px); }
       .btn.primary { background: linear-gradient(90deg, var(--accent), var(--accent2)); color: #04141f; }
       .btn.ghost { border: 1px solid var(--line); color: var(--text); background: var(--panel); }
@@ -70,6 +111,24 @@
       .card code { color: #9bdcff; font-size: 12.5px; background: #0a1119; padding: 2px 7px; border-radius: 6px; }
       .card p { margin: 8px 0 0; color: var(--muted); font-size: 13.5px; }
 
+      /* live demo */
+      .demo { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 22px; margin-top: 18px; }
+      .demo-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: stretch; }
+      .demo select, .demo textarea, .demo input {
+        background: #060a10; border: 1px solid var(--line); border-radius: 11px; color: var(--text);
+        font-size: 14.5px; padding: 12px 14px; font-family: inherit;
+      }
+      .demo select { flex: 1 1 240px; }
+      .demo textarea { flex: 2 1 320px; resize: vertical; min-height: 52px; }
+      .demo .run { margin-top: 14px; }
+      .demo .out {
+        margin-top: 16px; background: #060a10; border: 1px solid var(--line); border-radius: 12px;
+        padding: 16px 18px; min-height: 56px; font-family: "SF Mono", Menlo, Consolas, monospace;
+        font-size: 14px; color: var(--green); white-space: pre-wrap; word-break: break-word;
+      }
+      .demo .out .label { color: var(--dim); font-size: 12px; display: block; margin-bottom: 6px; }
+      .demo .hint { color: var(--dim); font-size: 12.5px; margin: 12px 0 0; }
+
       /* code sample */
       .code { background: #060a10; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; margin-top: 18px; }
       .code .bar { display: flex; gap: 7px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
@@ -77,6 +136,14 @@
       .code .bar i:nth-child(1){background:#ff5f57}.code .bar i:nth-child(2){background:#febc2e}.code .bar i:nth-child(3){background:#28c840}
       .code pre { margin: 0; padding: 18px 20px; overflow-x: auto; font-size: 13.5px; line-height: 1.7; color: #cbd5e1; font-family: "SF Mono", Menlo, Consolas, monospace; }
       .code .k { color: #9bdcff; } .code .s { color: #86efac; } .code .c { color: #5c6878; }
+
+      /* pricing / get started */
+      .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+      .plan { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 22px; }
+      .plan h3 { margin: 0 0 4px; font-size: 18px; }
+      .plan .price { font-size: 24px; font-weight: 800; margin: 6px 0 2px; }
+      .plan .price span { font-size: 13px; color: var(--muted); font-weight: 500; }
+      .plan p { color: var(--muted); font-size: 13.5px; margin: 8px 0 0; }
 
       footer { margin: 72px 0 56px; padding-top: 22px; border-top: 1px solid var(--line); color: var(--dim); font-size: 13.5px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
 
@@ -89,49 +156,81 @@
   <body>
     <div class="wrap">
       <nav>
-        <div class="brand"><img src="/brand/logo.svg" alt="" width="28" height="28" style="vertical-align:-7px;margin-right:10px;border-radius:7px" />tool<span class="dot">·</span>belt <span style="color:var(--muted);font-weight:600">API</span></div>
+        <div class="brand"><img src="/brand/logo.svg" alt="Toolbelt API logo" width="28" height="28" style="vertical-align:-7px;margin-right:10px;border-radius:7px" />tool<span class="dot">·</span>belt <span style="color:var(--muted);font-weight:600">API</span></div>
         <div class="nav-links">
+          <a href="#demo">Live demo</a>
           <a href="#features">Features</a>
           <a href="/docs">Docs</a>
-          <a href="https://rapidapi.com/">Get a key</a>
+          <a href="https://rapidapi.com/ded81908cell/api/toolbelt-api-qr-code-invoice-json-jwt-i18n-utilities">Get a key</a>
         </div>
       </nav>
 
       <section class="hero">
-        <span class="pill">● 50+ endpoints · zero AI cost</span>
+        <span class="pill">● 80 endpoints · zero AI cost · try below, no signup</span>
         <h1>One <span class="grad">toolbelt</span><br />for the boring stuff.</h1>
         <p class="lead">
-          QR &amp; barcodes, invoices, Markdown, data conversion, hashing, validators,
-          generators and full i18n — behind a single, fast, predictable API.
-          No AI bills. Deterministic results. Live in minutes.
+          QR &amp; barcodes, invoices, JWT, hashing, validators, JSON/CSV/YAML
+          conversion and full i18n — plus a Japanese text pack you won't find
+          elsewhere. 80 utilities behind one fast, predictable API. No AI bills.
         </p>
         <div class="cta">
-          <a class="btn primary" href="/docs">Explore the API →</a>
-          <a class="btn ghost" href="https://rapidapi.com/">Get an API key</a>
+          <a class="btn primary" href="#demo">Try it live →</a>
+          <a class="btn ghost" href="https://rapidapi.com/ded81908cell/api/toolbelt-api-qr-code-invoice-json-jwt-i18n-utilities">Get a free API key</a>
         </div>
 
         <div class="stats">
-          <div class="stat"><b>50+</b><span>endpoints, one base URL</span></div>
-          <div class="stat"><b>$0</b><span>inference cost — ~100% margin</span></div>
+          <div class="stat"><b>80</b><span>endpoints, one base URL</span></div>
+          <div class="stat"><b>$0</b><span>inference cost — predictable pricing</span></div>
           <div class="stat"><b>&lt;15ms</b><span>typical compute per call</span></div>
           <div class="stat"><b>OpenAPI</b><span>interactive docs at /docs</span></div>
         </div>
       </section>
 
+      <!-- LIVE DEMO -->
+      <div class="sec-title" id="demo">Live demo</div>
+      <h2>Run a real call right now — no key needed</h2>
+      <div class="demo">
+        <div class="demo-row">
+          <select id="op" aria-label="Operation">
+            <optgroup label="🇯🇵 Japanese text">
+              <option value="jp.hankaku">Full-width → half-width (全角→半角)</option>
+              <option value="jp.zenkaku">Half-width → full-width (半角→全角)</option>
+              <option value="jp.hiragana">Katakana → Hiragana</option>
+              <option value="jp.katakana">Hiragana → Katakana</option>
+              <option value="jp.romaji">Kana → Romaji (ローマ字)</option>
+              <option value="jp.slug">Japanese → URL slug</option>
+            </optgroup>
+            <optgroup label="Universal">
+              <option value="hash.sha256">SHA-256 hash</option>
+              <option value="hash.md5">MD5 hash</option>
+              <option value="base64.encode">Base64 encode</option>
+              <option value="base64.decode">Base64 decode</option>
+              <option value="text.upper">UPPERCASE</option>
+              <option value="text.lower">lowercase</option>
+              <option value="uuid.v4">UUID v4 (ignores input)</option>
+            </optgroup>
+          </select>
+          <textarea id="inp" rows="1" spellcheck="false">ＡＢＣ１２３ｱｲｳ</textarea>
+        </div>
+        <button class="btn primary run" id="run">Run ▸</button>
+        <div class="out" id="out"><span class="label">result</span>Press “Run ▸” to see the output.</div>
+        <p class="hint">Demo is rate-limited and runs a small subset of the 80 endpoints. For unmetered access, grab a free key on RapidAPI.</p>
+      </div>
+
       <div class="sec-title" id="features">What's inside</div>
       <h2>Everything an app reaches for</h2>
       <div class="grid">
-        <div class="card"><div class="ic">🔳</div><h3>QR &amp; barcodes</h3><code>POST /v1/barcode</code><p>QR, Wi-Fi/vCard QR, Code128/EAN/UPC/PDF417. PNG or SVG.</p></div>
-        <div class="card"><div class="ic">🧾</div><h3>Documents</h3><code>POST /v1/invoice</code><p>SVG invoices with auto totals, Markdown → safe HTML.</p></div>
+        <div class="card"><div class="ic">🔳</div><h3>QR &amp; barcodes</h3><code>POST /v1/barcode</code><p>QR, Wi-Fi/vCard QR, Code128/EAN/UPC/ITF/DataMatrix/PDF417. PNG or SVG.</p></div>
+        <div class="card"><div class="ic">🧾</div><h3>Documents</h3><code>POST /v1/invoice</code><p>SVG invoices with auto totals, Markdown → sanitised HTML.</p></div>
         <div class="card"><div class="ic">🔁</div><h3>Convert</h3><code>POST /v1/convert</code><p>JSON ↔ YAML ↔ CSV, units, time, number bases.</p></div>
-        <div class="card"><div class="ic">🔐</div><h3>Crypto &amp; tokens</h3><code>POST /v1/hash</code><p>SHA/MD5/HMAC, JWT decode, CRC32, base64/hex.</p></div>
-        <div class="card"><div class="ic">✅</div><h3>Validators</h3><code>POST /v1/validate/email</code><p>Email, card (Luhn), IBAN, password strength.</p></div>
-        <div class="card"><div class="ic">🌍</div><h3>i18n</h3><code>POST /v1/phone</code><p>Transliteration, phone, postal, currency.</p></div>
-        <div class="card"><div class="ic">🇯🇵</div><h3>Japanese</h3><code>POST /v1/jp/convert</code><p>Full-width⇄half-width, kana, romaji.</p></div>
+        <div class="card"><div class="ic">🔐</div><h3>Crypto &amp; tokens</h3><code>POST /v1/jwt/sign</code><p>JWT sign/decode, bcrypt, SHA/MD5/HMAC, CRC32, base64/hex.</p></div>
+        <div class="card"><div class="ic">✅</div><h3>Validators</h3><code>POST /v1/validate/email</code><p>Email, card (Luhn), IBAN (mod-97), password strength, PII redaction.</p></div>
+        <div class="card"><div class="ic">🌍</div><h3>i18n</h3><code>POST /v1/phone</code><p>Transliteration, phone (E.164), postal, currency.</p></div>
+        <div class="card"><div class="ic">🇯🇵</div><h3>Japanese</h3><code>POST /v1/jp/convert</code><p>Full-width⇄half-width, kana, romaji, URL slugs. Rare elsewhere.</p></div>
         <div class="card"><div class="ic">🆔</div><h3>Generators</h3><code>POST /v1/ulid</code><p>UUID, ULID, NanoID, passwords, passphrases, lorem.</p></div>
       </div>
 
-      <div class="sec-title">Try it</div>
+      <div class="sec-title">Try it from your terminal</div>
       <h2>One request, real output</h2>
       <div class="code">
         <div class="bar"><i></i><i></i><i></i></div>
@@ -143,10 +242,76 @@
   --output qr.png</pre>
       </div>
 
+      <div class="sec-title" id="pricing">Get started</div>
+      <h2>Free to start, pay as you grow</h2>
+      <div class="plans">
+        <div class="plan">
+          <h3>Free</h3>
+          <div class="price">$0</div>
+          <p>Generous monthly quota to build and test. No credit card to start.</p>
+        </div>
+        <div class="plan">
+          <h3>Pro</h3>
+          <div class="price">usage-based</div>
+          <p>Higher rate limits for production apps. Pay only for what you call.</p>
+        </div>
+        <div class="plan">
+          <h3>Ultra</h3>
+          <div class="price">scale</div>
+          <p>Top-tier limits for high-volume workloads. Same key, same base URL.</p>
+        </div>
+      </div>
+      <div class="cta" style="margin-top:22px">
+        <a class="btn primary" href="https://rapidapi.com/ded81908cell/api/toolbelt-api-qr-code-invoice-json-jwt-i18n-utilities">Get a key (English) →</a>
+        <a class="btn ghost" href="https://rapidapi.com/ded81908cell/api/toolbelt-api-Kai-Fa-Zhe-Xiang-keyuteiritei">日本語版はこちら →</a>
+      </div>
+
       <footer>
         <span>Toolbelt API · deterministic developer utilities</span>
-        <span><a href="/docs">/docs</a> · <a href="/health">/health</a> · <a href="https://rapidapi.com/">RapidAPI</a></span>
+        <span><a href="/docs">/docs</a> · <a href="/health">/health</a> · <a href="https://rapidapi.com/ded81908cell/api/toolbelt-api-qr-code-invoice-json-jwt-i18n-utilities">RapidAPI (EN)</a> · <a href="https://rapidapi.com/ded81908cell/api/toolbelt-api-Kai-Fa-Zhe-Xiang-keyuteiritei">RapidAPI (JP)</a></span>
       </footer>
     </div>
+
+    <script>
+      (function () {
+        var opEl = document.getElementById("op");
+        var inpEl = document.getElementById("inp");
+        var outEl = document.getElementById("out");
+        var runEl = document.getElementById("run");
+
+        function show(label, text, color) {
+          outEl.innerHTML = '<span class="label"></span>';
+          outEl.firstChild.textContent = label;
+          outEl.appendChild(document.createTextNode(text));
+          outEl.style.color = color || "var(--green)";
+        }
+
+        async function run() {
+          var op = opEl.value;
+          var text = inpEl.value;
+          show("running…", "", "var(--muted)");
+          try {
+            var res = await fetch("/demo/run", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ op: op, text: text }),
+            });
+            var data = await res.json();
+            if (res.ok) {
+              show("result", String(data.result), "var(--green)");
+            } else {
+              show("error", data.message || "Request failed", "#fca5a5");
+            }
+          } catch (e) {
+            show("error", "Network error — please try again.", "#fca5a5");
+          }
+        }
+
+        runEl.addEventListener("click", run);
+        inpEl.addEventListener("keydown", function (e) {
+          if ((e.metaKey || e.ctrlKey) && e.key === "Enter") run();
+        });
+      })();
+    </script>
   </body>
 </html>
