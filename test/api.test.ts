@@ -39,6 +39,27 @@ describe("auth", () => {
   });
 });
 
+describe("demo", () => {
+  it("runs a whitelisted op without a key", async () => {
+    const res = await app.inject({
+      method: "POST",
+      url: "/demo/run",
+      payload: { op: "jp.hankaku", text: "ＡＢＣ１２３" },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.json().result).toBe("ABC123");
+  });
+
+  it("rejects an unknown op", async () => {
+    const res = await app.inject({
+      method: "POST",
+      url: "/demo/run",
+      payload: { op: "rm.rf", text: "x" },
+    });
+    expect(res.statusCode).toBe(400);
+  });
+});
+
 describe("qr", () => {
   it("returns a PNG by default", async () => {
     const res = await auth({ text: "https://example.com" }, "/v1/qr");
